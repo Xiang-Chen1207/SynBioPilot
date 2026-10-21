@@ -1,0 +1,9 @@
+compound_id,smiles,name,inchikey
+SYN001,C,Synthetic fixture SYN001,
+SYN002,CC,Synthetic fixture SYN002,
+SYN003,CCC,Synthetic fixture SYN003,
+SYN004,CO,Synthetic fixture SYN004,
+SYN005,CCO,Synthetic fixture SYN005,
+SYN006,CCN,Synthetic fixture SYN006,
+SYN007,O,Synthetic fixture SYN007,
+SYN008,N,Synthetic fixture SYN008,

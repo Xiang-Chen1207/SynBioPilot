@@ -1,0 +1,14 @@
+# Minimal official SPRINT inference environment (Python 3.10)
+# Full upstream training extras are intentionally omitted.
+torch==2.4.1
+lightning==2.4.0
+pytorch-lightning==2.4.0
+torchmetrics==1.4.2
+wandb==0.17.8
+numpy==1.26.4
+pandas==2.1.4
+pyarrow==25.0.1
+rdkit==2023.9.5
+omegaconf==2.3.0
+fair-esm==2.0.0
+PyYAML==6.0.3

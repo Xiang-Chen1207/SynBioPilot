@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "For double-blind review, cite the accompanying anonymous BIBM submission. Replace anonymous fields with the public authors and DOI after de-anonymized release."
+title: "ChassisDeliver-150: A Chassis-Conditioned Biosynthetic Deliverability Benchmark"
+type: dataset
+version: "0.1.0-anonymous-review"
+date-released: "2026-07-06"
+abstract: "ChassisDeliver-150 contains 150 molecule-chassis pairs with evidence cards, annotation protocol, and resolved labels for evaluating chassis-conditioned biosynthetic deliverability prediction."
+authors:
+  - name: "Anonymous Authors"
+keywords:
+  - biosynthetic deliverability
+  - molecule-chassis benchmark
+  - microbial chassis
+  - evidence-grounded annotation
+license: "LicenseRef-ChassisDeliver-150-Research-Review-1.0"
+repository-code: "https://doi.org/10.5281/zenodo.TBD"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.TBD"
+    description: "Reserved public dataset DOI placeholder; update after de-anonymized release."

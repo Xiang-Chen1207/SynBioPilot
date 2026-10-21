@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "synbiopilot"
+version = "0.1.0"
+description = "Wiki-aligned, chassis-aware molecular prioritization for SUSTech-MED iGEM 2026"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+dependencies = ["numpy>=1.26", "pandas>=2.1", "pyarrow>=14"]
+
+[project.optional-dependencies]
+chemistry = ["rdkit>=2024.3"]
+
+[project.scripts]
+synbiopilot = "synbiopilot.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["synbiopilot*", "target2lead*"]
+exclude = ["components*", "vendor*"]

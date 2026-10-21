@@ -1,0 +1,14 @@
+group,biological_replicate,technical_replicate,value,unit
+control,c1,1,0.05,mg/L
+control,c1,2,0.07,mg/L
+control,c2,1,0.06,mg/L
+control,c2,2,0.08,mg/L
+control,c3,1,0.07,mg/L
+control,c3,2,0.09,mg/L
+sample,s1,1,0.80,mg/L
+sample,s1,2,0.90,mg/L
+sample,s2,1,1.00,mg/L
+sample,s2,2,1.10,mg/L
+sample,s3,1,0.90,mg/L
+sample,s3,2,1.00,mg/L
+

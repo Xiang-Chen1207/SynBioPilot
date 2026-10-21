@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "Please cite this software and the underlying model/data providers when using SynBioPilot."
+title: "SynBioPilot: Chassis-Aware Therapeutic Discovery"
+type: software
+version: 0.1.0
+authors:
+  - name: "SUSTech-MED iGEM 2026 team"
+url: "https://2026.igem.wiki/sustech-med/model-synbiopilot"
+license: MIT

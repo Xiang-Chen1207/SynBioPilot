@@ -1,0 +1,127 @@
+{
+  "run": {
+    "output": "../runs/synthetic_demo",
+    "python": "python3",
+    "seed": 42,
+    "top_k": 3,
+    "models": [
+      "drugclip",
+      "sprint",
+      "pharmaconet",
+      "psichic"
+    ]
+  },
+  "target": {
+    "id": "HDAC2_4LXZ",
+    "protein_pdb": "../examples/hdac2/protein.pdb",
+    "sequence_fasta": "../examples/hdac2/sequence.fasta",
+    "reference_ligand_sdf": "../examples/hdac2/reference.sdf",
+    "chain": "A",
+    "box_size": [
+      24,
+      24,
+      24
+    ]
+  },
+  "library": {
+    "molecules": "../examples/synthetic/molecules.csv",
+    "columns": {
+      "compound_id": "compound_id",
+      "smiles": "smiles",
+      "name": "name",
+      "inchikey": "inchikey"
+    }
+  },
+  "drugclip": {
+    "python": "python3",
+    "repo": "../external/drugclip",
+    "screen_repo": "../external/drugclip_screen_pipeline",
+    "checkpoint_dir": "../weights/drugclip/6_folds",
+    "embedding_caches": [],
+    "batch_size": 128,
+    "chunk_size": 10000,
+    "cpu_workers": 8,
+    "device_index": 0
+  },
+  "sprint": {
+    "python": "python3",
+    "repo": "../external/sprint",
+    "checkpoint": "../weights/sprint/merged_saprot.ckpt",
+    "saprot_checkpoint": "../weights/sprint/SaProt_650M_AF2.pt",
+    "foldseek": "../external/foldseek/foldseek/bin/foldseek",
+    "embedding_caches": [],
+    "batch_size": 4096,
+    "device": "cuda"
+  },
+  "psichic": {
+    "python": "python3",
+    "repo": "../external/psichic",
+    "weights": "../weights/psichic/PSICHIC_XL",
+    "device": "cuda",
+    "batch_size": 64,
+    "chunk_size": 2000,
+    "graph_workers": 4
+  },
+  "pharmaconet": {
+    "python": "python3",
+    "repo": "../external/pharmaconet",
+    "checkpoint": "../weights/pharmaconet/pmnet.tar",
+    "device": "cuda",
+    "cpu_workers": 8,
+    "conformer_count": 10,
+    "molecule_timeout_seconds": 120
+  },
+  "admet": {
+    "python": "python3",
+    "num_workers": 0,
+    "threads": 8
+  },
+  "gate": {
+    "python": "python3",
+    "models_dir": "../resources/gems",
+    "chassis_id": "lplantarum",
+    "chassis_name": "Lactiplantibacillus plantarum WCFS1",
+    "kegg_organism_code": "lpl",
+    "backend": "api",
+    "model": "deepseek-chat",
+    "reasoning_effort": "high",
+    "literature_k": 3,
+    "timeout_seconds": 1200,
+    "base_url": "https://api.deepseek.com",
+    "api_key_env": "DEEPSEEK_API_KEY"
+  },
+  "selection": {
+    "route_classes": [
+      "A1",
+      "A2",
+      "B1",
+      "B2",
+      "B3",
+      "C1",
+      "C2",
+      "D1",
+      "D2"
+    ],
+    "deliverable_now_classes": [
+      "A1",
+      "A2",
+      "B1",
+      "B2"
+    ]
+  },
+  "md": {
+    "enabled": false,
+    "prepared_systems": {}
+  },
+  "inputs": {
+    "kind": "SYNTHETIC_FIXTURES",
+    "scores": {
+      "drugclip": "../examples/synthetic/drugclip.csv",
+      "sprint": "../examples/synthetic/sprint.csv",
+      "pharmaconet": "../examples/synthetic/pharmaconet.csv",
+      "psichic": "../examples/synthetic/psichic.csv"
+    },
+    "admet": "../examples/synthetic/admet.csv",
+    "gate": "../examples/synthetic/gate.csv"
+  }
+}

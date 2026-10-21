@@ -1,0 +1,17 @@
+{
+  "name": "SYNTHETIC illustrative growth curves — not real wet-lab results",
+  "kind": "growth",
+  "endpoint": "Illustrative optical density at 600 nm",
+  "unit": "OD600",
+  "candidate_id": "",
+  "research_run_id": "",
+  "control_group": "control",
+  "chassis_name": "Illustrative chassis only",
+  "condition": "SYNTHETIC demonstration condition; no biological observations",
+  "time_unit": "h",
+  "dose_unit": "uM",
+  "qc_passed": true,
+  "qc_notes": "SYNTHETIC QC flag for exercising analysis only; no actual assay validation.",
+  "detection_limit": null
+}
+

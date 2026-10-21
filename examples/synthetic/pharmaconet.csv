@@ -1,0 +1,9 @@
+compound_id,raw_score,status,error
+SYN001,8,success,
+SYN002,7,success,
+SYN003,,failed,SYNTHETIC missing prediction
+SYN004,9,success,
+SYN005,6,success,
+SYN006,5,success,
+SYN007,4,success,
+SYN008,3,success,

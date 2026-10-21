@@ -1,0 +1,15 @@
+torch==2.1.2
+numpy==1.26.4
+scipy==1.13.1
+pandas==2.2.3
+pyarrow==17.0.0
+rdkit==2024.3.6
+scikit-learn==1.5.2
+lmdb==1.5.1
+ml-collections==0.1.1
+iopath==0.1.10
+tensorboardX==2.6.2.2
+tqdm
+biopython==1.84
+PyYAML
+wandb

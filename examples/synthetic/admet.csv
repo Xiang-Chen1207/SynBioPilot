@@ -1,0 +1,9 @@
+compound_id,admet_status,BBB_Martins,PAMPA_NCATS,Solubility_AqSolDB,hERG,DILI,CYP3A4_Veith,CYP1A2_Veith,Pgp_Broccatelli
+SYN001,success,0.8,0.7,-3,0.1,0.2,0.3,0.2,0.1
+SYN002,success,0.8,0.7,-3,0.1,0.2,0.3,0.2,0.1
+SYN003,success,0.8,0.7,-3,0.1,0.2,0.3,0.2,0.1
+SYN004,success,0.8,0.7,-3,0.1,0.2,0.3,0.2,0.1
+SYN005,success,0.8,0.7,-3,0.1,0.2,0.3,0.2,0.1
+SYN006,success,0.8,0.7,-3,0.1,,0.3,0.2,0.1
+SYN007,success,0.8,0.7,-3,0.1,0.2,0.3,0.2,0.1
+SYN008,success,0.8,0.7,-3,0.1,0.2,0.3,0.2,0.1

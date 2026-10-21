@@ -1,0 +1,81 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "semantic_source": {
+      "type": "string",
+      "enum": [
+        "denovo",
+        "biotransform",
+        "non_native"
+      ]
+    },
+    "precursor_available": {
+      "type": "string",
+      "enum": [
+        "available_in_medium",
+        "available_by_simple_feeding",
+        "requires_custom_synthesis",
+        "unknown"
+      ]
+    },
+    "engineering_required": {
+      "type": "boolean"
+    },
+    "raw_confidence": {
+      "type": "number"
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "organism": {
+            "type": "string"
+          },
+          "enzyme_or_pathway": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "relation_type": {
+            "type": "string"
+          },
+          "precursor_available": {
+            "type": "string"
+          },
+          "provenance_strength": {
+            "type": "string"
+          },
+          "citation_pmid": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "support_score": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "organism",
+          "enzyme_or_pathway",
+          "relation_type",
+          "precursor_available",
+          "provenance_strength",
+          "citation_pmid",
+          "support_score"
+        ]
+      }
+    }
+  },
+  "required": [
+    "semantic_source",
+    "precursor_available",
+    "engineering_required",
+    "raw_confidence",
+    "evidence"
+  ]
+}
