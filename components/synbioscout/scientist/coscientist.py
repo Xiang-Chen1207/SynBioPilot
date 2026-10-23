@@ -151,7 +151,7 @@ class BoundedSources:
 
     def _identity(self, request):
         plan = self.engine.scheduler.create(request, origin="supervisor_identity",
-                                            reason="固定协调器核对已保存实体身份；不由模型选择候选")
+                                            reason="协调器核对研究候选的唯一化学身份")
         result = self.engine.scheduler.run(plan)
         if result is None:  # reused plans retain references; lookup the actual saved result
             key = digest(request.model_dump())
@@ -381,7 +381,7 @@ class CoScientistEngine:
                 self.active[role] = self.active.get(role, 0) + 1
                 active_registered = True
                 self.event(role, "llm", "running", title,
-                    "独立上下文调用；只返回结构化研究产物，不公开私密思维链。",
+                    "独立上下文调用，返回结构化研究产物；私密推理保留在模型内部。",
                     operation_id=reservation_id, operation_status="running")
             phase = "worker_setup"
             llm = self.legacy.llm_factory(self.settings.llm,
@@ -438,7 +438,7 @@ class CoScientistEngine:
                     self.event(role, "orchestration" if local_failure else "llm",
                         "running" if self.active.get(role, 0) else "failed", title,
                         "本地调用准备或记录保存失败；实际模型调用另行计数。" if local_failure else
-                        "调用失败或超出预算；没有补造完成结果。",
+                        "调用失败或超出预算；已保存状态与恢复信息。",
                         operation_id=reservation_id, operation_status="failed", provider_failure=provider_failure,
                         budget_failure=failure if local_failure or isinstance(exc, BudgetExceeded) else None)
                 except Exception:  # Report best-effort; preserve the original exception.
@@ -856,7 +856,7 @@ class CoScientistEngine:
             h.inference_gaps.append("部分引用不存在、未通过审查或证据方向不符，已从可用证据中移除")
         if not h.evidence_ids:
             h.status = "needs_evidence"
-            h.inference_gaps.append("没有已审查的支持证据，不能形成已支持的干预结论")
+            h.inference_gaps.append("干预结论状态为待补证，以已审查的支持证据为判据")
         if normalized(h.chassis_name) != normalized(self.state.anchor.chassis_name):
             h.chassis_name = self.state.anchor.chassis_name
             h.chassis = h.chassis.model_copy(
@@ -867,7 +867,7 @@ class CoScientistEngine:
                     "gaps": ["原草稿菌株与任务不符；需对实际菌株重新补证"],
                 }
             )
-            h.inference_gaps.append("菌株错配已纠正，不沿用其他菌株生产结论")
+            h.inference_gaps.append("菌株错配已纠正，生产结论按实际菌株重新评价")
         h.chassis.evidence_ids = [i for i in h.chassis.evidence_ids if i in valid]
         # A conservative mechanical gate supplements, never replaces, domain review.
         production_ids = []
@@ -904,7 +904,7 @@ class CoScientistEngine:
             if not exact or h.chassis.strain_match != "exact":
                 h.chassis.status = "indirect" if production_ids else "unknown"
                 h.chassis.strain_match = "other_strain" if production_ids else "unknown"
-                h.chassis.gaps.append("缺少 exact 菌株与条件匹配的生产依据，禁止直接外推")
+                h.chassis.gaps.append("生产适用性待评估：需要菌株与条件精确匹配的生产依据")
         if not self.state.anchor.chassis_name:
             h.chassis.status, h.chassis.strain_match = "unknown", "unknown"
             h.chassis.evidence_ids = []
@@ -1081,7 +1081,7 @@ class CoScientistEngine:
                     "query": query,
                     "status": result.status,
                     "source_ids": ids,
-                    "scope": "bounded Europe PMC query, not an exhaustive novelty audit",
+                    "scope": "novelty search scope: configured, bounded Europe PMC queries",
                 }
             )
             h.novelty.closest_source_ids = ids
@@ -1181,10 +1181,10 @@ class CoScientistEngine:
                     right_id=right.hypothesis_id,
                     right_version=right.version,
                     outcome="incomparable",
-                    reason="条件或终点不同；规则模块弃权，不混排实验体系",
+                    reason="条件或终点不同，规则模块将比较标记为不可比",
                     criterion=criterion,
                 )
-                self.event("ranking", "rule", "running", "条件不匹配：不进行 LLM 胜负判断")
+                self.event("ranking", "rule", "running", "条件匹配检查未通过，本次比较状态为跳过")
             else:
                 payload = {**self.context([left, right]), "comparison_id": cid, "criterion": criterion,
                     "instructions": "Compare only these two exact versions under the given criterion. Outcomes include tie/insufficient/incomparable. IDs/versions must match. Cite only their accepted evidence IDs."}
@@ -1223,7 +1223,7 @@ class CoScientistEngine:
                 if review.outcome in ("left", "right") and not review.evidence_ids:
                     review.outcome, review.reason = (
                         "insufficient",
-                        "缺少本比较的有效证据引用，不能宣称胜出",
+                        "本次比较的有效证据引用待补充，结果保持未决",
                     )
             self.state.comparisons.append(review)
             self.persist()
@@ -1243,16 +1243,16 @@ class CoScientistEngine:
             if any((r.hypothesis_id, r.version) == (h.hypothesis_id, h.version) for h in cards)
         ]
         if not cards or not any(r.objections or r.required_evidence for r in reviews):
-            self.finish(item, "evolution", "skipped", "没有具体修订依据，不伪造版本变化")
+            self.finish(item, "evolution", "skipped", "未触发修订条件，保留当前版本")
             return
         payload = {**self.context(cards), "reviews": [r.model_dump() for r in reviews],
             "instructions": "At most one revision per supplied card. Preserve ID; version=old+1,parent_version=old. Every change names actual review/source observations. Narrow unsupported claims rather than invent support. Stay anchored. Empty revisions allowed."}
         if not self.optional_preflight("hypothesis_revision", required_bytes=self.request_bytes(
             "evolution", EvolutionDraft, payload), calls=1, growth=True,
             seconds=self.latency_allowance()):
-            self.finish(item, "evolution", "skipped", "预算预检不足；保留已审版本，不生成未复核修订")
+            self.finish(item, "evolution", "skipped", "预算预检不足，保留已审版本；修订阶段状态为跳过")
             return
-        draft = self.optional_call("evolution", "据批评修订，不继承旧胜场", EvolutionDraft, payload,
+        draft = self.optional_call("evolution", "据批评修订，审查与比较结果按版本记录", EvolutionDraft, payload,
                                    reserve=self.critical_reserve(growth=True))
         if draft is None:
             self.finish(item, "evolution", "skipped", "修订调用未取得可用结果；保留已审版本")
@@ -1356,7 +1356,7 @@ class CoScientistEngine:
             item,
             "meta_review",
             "completed" if self.state.contracts else "partial",
-            f"{len(self.state.contracts)} 份供人工评审的研究合同",
+            f"{len(self.state.contracts)} 份自动生成、供后续审阅的研究计划",
         )
 
     def restore_seed(self):
@@ -1417,7 +1417,7 @@ class CoScientistEngine:
             self.state.hypotheses.append(self.normalize_card(h))
             if getattr(self, "flow", None):
                 self.flow.register(h)
-                q = self.flow.new_query("reuse", "saved_version_context", "已存版本与来源重新审查；没有本轮新检索",
+                q = self.flow.new_query("reuse", "saved_version_context", "重新审查已存版本与来源；获取方式为复用，沿用原检索记录",
                     hypothesis_id=h.hypothesis_id, version=h.version, status="reused", provider="saved",
                     claim_ids=[c.claim_id for c in self.flow.claims_for(h)],
                     reused_from=parent.run_id, source_ids=[s.source_id for s in self.run.sources],
@@ -1447,7 +1447,7 @@ class CoScientistEngine:
                     f'"{self.run.brief.disease}" AND (mechanism OR intervention)',
                     f'"{self.run.brief.disease}" AND (adverse OR ineffective)',
                 ],
-                research_questions=["模型禁用；只有检索观察，没有已判读假说"],
+                research_questions=["已完成检索；模型研究阶段待启用后运行"],
                 assumptions=[],
             )
         else:
@@ -1505,7 +1505,7 @@ class CoScientistEngine:
         )
         if self.settings.llm.backend == "none":
             raise RuntimeError(
-                "LLM disabled; source retrieval is not a completed Co-Scientist result"
+                "Source retrieval completed; Co-Scientist interpretation awaits an enabled model"
             )
         step = self.phase("evidence", "核验原文与独立语义审查；解析靶点和分子身份", "supervisor")
         if self.candidate_assessment_mode():
@@ -1685,7 +1685,7 @@ class CoScientistEngine:
             self.event("supervisor", "stop", "partial", "停止并保存已有证据与假说", str(exc))
         for actor in self.state.agents:
             if actor.status == "queued":
-                actor.status, actor.task = "skipped", "未执行，不显示虚构成果"
+                actor.status, actor.task = "skipped", "执行状态：待运行"
             elif actor.status == "running":
                 actor.status = "partial"
         decide_candidates(self.run.candidates, self.run.evidence)

@@ -119,8 +119,8 @@ def compute_preflight(config_path: Path, start="prepare", until="md"):
     if not cfg.get("selection", {}).get("admet_bounds"):
         warnings.append("ADMET bounds are empty: properties will be annotated, not safety-filtered")
     if cfg.get("selection", {}).get("allow_gate_abstain", True):
-        warnings.append("Gate E may enter exploratory screening; it is not positive chassis evidence")
-    warnings.append("Readiness checks do not prove checkpoint compatibility or successful scientific execution")
+        warnings.append("Gate E retains unknown chassis-evidence status and may enter exploratory screening")
+    warnings.append("Readiness covers configured files and dependencies; checkpoint compatibility and execution have separate checks")
     return {"ready": all(c["ready"] for c in checks), "stages": list(selected),
             "checks": checks, "warnings": warnings}
 

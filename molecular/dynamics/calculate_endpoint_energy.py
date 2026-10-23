@@ -1,8 +1,9 @@
-"""Single-trajectory GBSA endpoint scores for the four selected trajectories.
+"""Single-trajectory GBSA endpoint scores for SAHA 05/06 and SFN pose A 08/09.
 
 Amber GB supports the 12-6 baseline here; the noncancelling ligand-receptor
 12-6-4 C4 cross term is evaluated explicitly from the production topology.
-This hybrid endpoint score excludes entropy and is not a binding free energy.
+This hybrid endpoint interaction-energy estimate uses the terms listed below;
+entropy, reorganization and standard-state contributions are omitted.
 Run on a provisioned compute node with the documented input assets.
 """
 from pathlib import Path
@@ -126,7 +127,7 @@ def analyze(item):
               'gb':'OBC2 igb=5, mbondi2, intdiel=1, extdiel=78.5, saltcon=0.15 M',
               'nonpolar':'LCPO gbsa=1, surften=0.005 kcal/mol/A^2, no offset',
               'C4':'explicit -sum C4_ij/r_ij^4 over ligand-receptor cross pairs from production topology; no PBC/cutoff in dry endpoint',
-              'limitation':'Hybrid MM/GBSA + explicit C4 endpoint estimate; entropy, reorganization and standard-state terms are omitted. Metal-site accuracy has not been calibrated against a dedicated reference set.',
+              'limitation':'Hybrid MM/GBSA + explicit C4 endpoint estimate; entropy, reorganization and standard-state terms are omitted. Dedicated reference-set calibration of metal-site accuracy: pending.',
               'ions_GB_radii_A':{a.name:a.solvent_radius for a in dry['receptor'].atoms if a.atomic_number in [11,20,30]},
               'ions_GB_screen':{a.name:a.screen for a in dry['receptor'].atoms if a.atomic_number in [11,20,30]}}
     (dest/'method.json').write_text(json.dumps(metadata,indent=2))

@@ -71,7 +71,12 @@ const source=fs.readFileSync(process.argv[1],"utf8").replace(/\ninit\(\);\s*$/,"
 vm.runInContext(source+"\nglobalThis.translate=systemText;",c);
 const original="患者原文：不要NAC；这是引用而不是界面提示。";
 const known="candidate_hypothesis_expansion；Wall-time scheduling allowance exhausted；UTF-8字节预留，非token计量或费用。";
-process.stdout.write(JSON.stringify({original:c.translate(original),known:c.translate(known)}));
+const legacy="用户给定候选不算自主发现";
+const current="保留候选来源：用户输入或当前研究流程识别";
+process.stdout.write(JSON.stringify({original:c.translate(original),known:c.translate(known),
+  legacy:c.translate(legacy),current:c.translate(current),
+  legacyPlan:c.translate("2 份供人工评审的研究合同"),
+  currentPlan:c.translate("2 份自动生成、供后续审阅的研究计划")}));
 '''
     result = subprocess.run(
         [node, "-e", script, str(ROOT / "scientist/web/app.js")],
@@ -79,6 +84,10 @@ process.stdout.write(JSON.stringify({original:c.translate(original),known:c.tran
     )
     actual = json.loads(result.stdout)
     assert actual["original"] == "患者原文：不要NAC；这是引用而不是界面提示。"
+    assert actual["legacy"] == actual["current"]
+    assert "assessment input" in actual["current"]
+    assert actual["legacyPlan"] == actual["currentPlan"]
+    assert "automatically generated research plans" in actual["currentPlan"]
     assert actual["known"] == (
         "candidate_hypothesis_expansion; Wall-time scheduling allowance exhausted; "
         "UTF-8 byte reservation, not token usage or cost."

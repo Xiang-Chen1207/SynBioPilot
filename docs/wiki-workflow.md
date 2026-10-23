@@ -5,13 +5,13 @@ read on 21 October 2026 (Asia/Shanghai). The project workflow below incorporates
 
 | Wiki section | Repository implementation | Scope |
 |---|---|---|
-| AI Scientist | `components/synbioscout/scientist/` | Autonomous project discovery; optional supplied-candidate assessment mode; identity, source passage and review binding; separate model-backed reviews; optional budget-limited hypothesis cycle; English workbench |
+| AI Scientist | `components/synbioscout/scientist/` | Autonomous project discovery; optional candidate-assessment input mode; identity, source passage and review binding; separate model-backed reviews; optional budget-limited hypothesis cycle; English workbench |
 | Eight-source library | `synbiopilot/library.py` | Import supplied CSV exports; canonical isomeric SMILES deduplication; source-record mapping. Source database download/access is external. |
 | Four independent Top1000 lists | `target2lead/adapters/`; `synbiopilot/scoring.py:candidates` | DrugCLIP, SPRINT, PharmacoNet, PSICHIC; same library IDs; successful finite scores only |
 | Equations (1)–(5) | `valid_scores`, `admet8`, `composite` | Full valid reference pool, average tied ranks, exact weights, 50:50 final score, missing values pending |
 | Literature + KEGG/GEM + FBA | `vendor/chassisgate/deliverability/integrated.py`, `mechanistic_paths.py`, `fusion.py` | Existing team implementation with external GEM and LLM/service dependencies |
 | A–D follow-up vs deliverable-now | `synbiopilot/scoring.py:stratify` | Separate route-follow-up and deliverable-now lists; technical/missing inputs E2; unresolved E stays unknown |
-| Focused molecular analysis | `molecular/` | Actual project AD4Zn panel and selected-four-run H-bond/endpoint analysis scripts; requires separately supplied scientific input assets |
+| Focused molecular analysis | `molecular/` | Actual project AD4Zn panel and SAHA 05/06 and SFN 08/09 H-bond/endpoint analysis scripts; requires separately supplied scientific input assets |
 
 ## Module handoffs
 

@@ -205,7 +205,7 @@ def assessment_cards(run, evaluations=None):
         gap_view = scoped_gap_view(candidate, cards, contracts, checker)
         gaps = gap_view["unknowns"]
         if candidate.identity_status != "resolved":
-            gaps.append("化学身份仍需核对；不能由名称推定化学形式或结构")
+            gaps.append("化学身份待核对：需要唯一化学形式与结构记录")
         rows.append({"candidate_id": candidate.candidate_id, "entity_id": candidate.entity_id or candidate.candidate_id,
             "name": candidate.name, "origin": "user_supplied" if any(c is candidate for c in specified) else "research_record",
             "identity_status": candidate.identity_status, "identity_revision": candidate.identity_revision,
@@ -246,7 +246,7 @@ def assessment_cards(run, evaluations=None):
                 "evidence_ids": [], "opposing_evidence_ids": [],
                 "evidence_scope": [], "review_associations": [], "observation_support": [], "hypothesis_versions": [],
                 "unknowns": ["候选名称的唯一化学身份关联待确定"],
-                "next_questions": ["核对指定候选的唯一化学身份并形成可追溯评估记录"],
+                "next_questions": ["核对评估输入的唯一化学身份并形成可追溯记录"],
                 "status_note": "候选结论包含评估状态、证据来源和适用条件。"})
     return rows
 

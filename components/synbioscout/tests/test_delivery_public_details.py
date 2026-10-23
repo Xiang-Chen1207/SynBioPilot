@@ -180,14 +180,14 @@ const input=JSON.parse(fs.readFileSync(0,"utf8"));process.stdout.write(JSON.stri
     # Locale differs from the retained report language; canonical projection
     # equality above still enforces the same range/acquisition semantics.
     assert actual["labels"] == [
-        "Original Full text · saved contiguous excerpt · original text window unverified · Reused material · not a full-text retrieval this run",
+        "Original Full text · saved contiguous excerpt · original text window unverified · Reused saved excerpt",
         "Full text · fresh full-text retrieval unconfirmed",
         "Abstract only",
         "Material with unrecorded scope",
         "Full text · retrieved this run; full-text completeness requires review",
         "Full text · full text newly retrieved this run",
         "Database record · reused saved material",
-        "Original Full text · saved contiguous excerpt · original text window unverified · Acquisition not recorded · no proof of fresh full-text retrieval",
+        "Original Full text · saved contiguous excerpt · original text window unverified · Acquisition not recorded · excerpt scope",
         "Full text · reused saved material",
     ]
     assert "PRIVATE_SENTINEL" not in result.stdout
@@ -212,7 +212,7 @@ def test_actual_narrow_observation_gate_remains_needs_evidence_in_markdown_and_j
     assert assessment["observation_support"][0]["polarity"] == "mixed"
     assert assessment["opposing_evidence_ids"] == [evidence.evidence_id]
     report = render_report(engine.run)
-    assert "已审窄来源观察" in report and "不表示临床有效" in report
+    assert "已审窄来源观察" in report and "整体假说结论和临床适用性分别评估" in report
     assert "原证据极性 mixed" in report and "候选科学状态：needs_evidence" in report
     node = os.environ.get("SYNBIOSCOUT_TEST_NODE") or shutil.which("node")
     if not node:

@@ -1,4 +1,4 @@
-"""Canonical-isomeric-SMILES union of user-supplied database exports."""
+"""Canonical-isomeric-SMILES union of configured database exports."""
 from pathlib import Path
 import csv
 from rdkit import Chem

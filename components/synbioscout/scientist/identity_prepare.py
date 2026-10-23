@@ -123,7 +123,7 @@ def ensure_specified_candidates(run):
                     routes=["user_supplied"], decision="hold",
                     role="unknown", role_status="needs_review", identity_status="needs_review",
                     rationale="Assessment input retained with its candidate origin; evidence review follows",
-                    uncertainties=["Specified candidate was not assessed by initial evidence synthesis"])
+                    uncertainties=["Assessment input awaits evidence synthesis"])
                 run.candidates.append(candidate)
                 created[_exact(declaration.full_name)] = candidate
             linked = [candidate]
@@ -338,7 +338,7 @@ def prepare_core_identities(engine, identity_records=(), *, local_only=False):
                             reused = [source, *alias_sources]
                             flow.ingest(reused, "library")
                             flow.new_query("reuse", "background_identity",
-                                "已核对的背景化学身份复用；没有本轮网络查证", provider="pubchem",
+                                "复用已核对的背景化学身份，获取时间沿用原记录", provider="pubchem",
                                 status="reused", source_ids=[s.source_id for s in reused],
                                 reused_from=str(provenance.get("package_id", "")),
                                 stop_reason="background_identity_not_new_query")

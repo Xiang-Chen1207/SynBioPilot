@@ -1,8 +1,8 @@
-"""Versioned receipts for exact normal-connector queries, not a discovery corpus.
+"""Versioned provenance receipts keyed by exact normal-connector queries.
 
 Responses still come exclusively from HTTPClient's query/body-keyed cache or its
-bounded network path. This small index records provenance; it cannot enumerate
-candidate molecules, silently inject prior literature, or bypass the run ledger.
+bounded network path. This small index records query provenance. Candidate discovery, literature
+retrieval and request accounting use their dedicated workflows and run ledger.
 """
 from __future__ import annotations
 

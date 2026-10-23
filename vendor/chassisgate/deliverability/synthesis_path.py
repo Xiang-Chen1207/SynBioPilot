@@ -81,9 +81,9 @@ def choose_synthesis_path(
 ) -> SynthesisPath | None:
     """Prefer full-text literature paths, then fall back to KEGG.
 
-    ``mechanism`` may be a dual label.  The builder intentionally does not
-    invent retrosynthetic steps; it only repackages explicit literature path
-    extractions or KEGG reaction records already collected by the genome path.
+    ``mechanism`` may be a dual label. The builder packages explicit literature
+    path extractions or KEGG reaction records collected by the genome path.
+    Every step retains its source record.
     """
     if mechanism not in {"denovo", "biotransform", "denovo&biotransform"}:
         return None
@@ -128,7 +128,7 @@ def _literature_path(
     return SynthesisPath(
         source="literature_fulltext",
         mechanism=_mechanism(mechanism),
-        path_status="curated",
+        path_status="curated",  # Compatibility label for automatically structured full-text steps.
         target_compound_id=raw.get("target_compound_id"),
         entry_precursors=_list(raw.get("entry_precursors")),
         evidence_refs=refs,

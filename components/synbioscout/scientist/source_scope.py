@@ -2,8 +2,8 @@
 
 The original SourceRecord is never rewritten. Window coordinates are half-open
 Unicode character offsets into the original available text, not byte counts.
-Missing legacy acquisition facts stay unknown; a URL or date is not proof that
-this run downloaded or read a full paper.
+Reading scope follows the available source text and acquisition receipts.
+Missing legacy acquisition facts retain unknown status.
 """
 from __future__ import annotations
 
@@ -42,8 +42,8 @@ def source_scope_view(source):
     excerpt = metadata.get("local_excerpt_only") is True
     start, end = _window_offset(metadata.get("excerpt_start")), _window_offset(metadata.get("excerpt_end"))
     text = row.get("text")
-    # Validate against the actual current text only. Empty/export-omitted text
-    # cannot verify a window; cached scope/length/verified metadata is not proof.
+    # Validate a window against the available current text. Empty or export-omitted
+    # text retains a null window; cached metadata retains its recorded scope.
     window = {"start": start, "end": end} if (excerpt and start is not None and end is not None
         and start < end and isinstance(text, str) and bool(text) and end - start == len(text)) else None
     origin = next((metadata[key] for key in ("acquisition_origin", "acquisition", "origin")

@@ -5,13 +5,13 @@ SynBioScout helps research teams turn a question into a structured study, examin
 ## Features
 
 - Natural-language entry with editable fields and confirmation before research starts.
-- Disease exploration or assessment of candidates supplied by the user.
+- Autonomous disease exploration, with an optional candidate-assessment input mode.
 - Literature retrieval, traceable quotations and chemical-identity checks.
 - Separate evidence and candidate-conclusion reviews, linked to the current record version.
 - Role activity, budget receipts and recoverable submissions.
 - Markdown, JSON, CSV and ZIP exports, plus an explicit Target2Lead compute handoff.
 
-Candidate fields start empty. NAC, SFN and other molecules are assessed when supplied by the user or returned by the current research sources. Source packages are selected explicitly.
+Disease exploration starts with empty candidate fields and identifies candidates through current research sources. The optional candidate-assessment mode evaluates existing inputs and records their origin. Background packages are enabled by configuration. The SUSTech-MED project uses autonomous discovery and automatic screening, as described in the [project records](../../docs/result-provenance.md).
 
 ## Install and start
 
@@ -56,5 +56,5 @@ Run the portable checks with an installed Node executable:
 SYNBIOSCOUT_TEST_NODE=/path/to/node .venv/bin/python -m pytest tests
 ```
 
-Include the version, reproduction steps and safe diagnostic metadata when reporting an issue. Keep credentials, private inference files and patient data out of shared reports. Research use requires human review of sources and conclusions.
+Include the version, reproduction steps and safe diagnostic metadata when reporting an issue. Keep credentials, private inference files and patient data out of shared reports. After automated research, sources and conclusions remain available for expert review.
 

@@ -1,8 +1,8 @@
 # Focused molecular analysis
 
 The molecular-analysis module evaluates R-SFN–HDAC2 interactions alongside
-SAHA controls using an AD4Zn docking panel and analysis of selected MD
-trajectories. Outputs include pose geometry, contacts, hydrogen-bond
+SAHA controls using an AD4Zn docking panel and analysis of SAHA runs 05/06 and SFN pose A runs
+08/09. Outputs include pose geometry, contacts, hydrogen-bond
 statistics and endpoint interaction-energy estimates.
 
 ## AD4Zn docking panel
@@ -68,11 +68,11 @@ Hydrogen bonds use topology-bonded hydrogens, donor–acceptor distance ≤3.5 �
 angle ≥150°, periodic boundaries and unique directed pairs per frame.
 The endpoint code uses 1 ns snapshots and the existing hybrid OBC2 GB + explicit
 ligand–receptor C4 cross term. This endpoint interaction-energy estimate omits
-entropy, reorganization and standard-state terms; metal-site accuracy requires
-calibration against a dedicated reference set. Atom indices, residue offsets,
+entropy, reorganization and standard-state terms; dedicated reference-set calibration of metal-site accuracy
+has status: pending. Atom indices, residue offsets,
 trajectory spacing and group selection must match the archived systems.
 
-`dynamics/plot_comparison.py` regenerates the selected-run RMSD/RMSF/Zn plots from
+`dynamics/plot_comparison.py` regenerates the four-run RMSD/RMSF/Zn plots from
 precomputed `results/publication_results_25runs_20261012/data/hdac2/*/metrics.csv`
 and its corresponding `tables/HDAC2_{windows,RMSF,Zn_geometry}.csv` files beneath
 the external asset root. It can also read newly calculated `energy/*` outputs.
@@ -82,7 +82,7 @@ It reads these precomputed metrics tables and requires matplotlib and openpyxl.
 
 Production trajectories, starting-system lineage and original velocity seeds
 are external inputs. The 200 ns analyses require the exact run-to-topology and
-starting-pose mapping; that provenance is pending original records. The older
+starting-pose mapping; the corresponding original provenance records have status: pending. The older
 5/80 ns restrained branches represent different simulations.
 
 AD4Zn scores describe docking; N/O/S–Zn distances describe geometry; repeated

@@ -49,6 +49,8 @@ _CURRENCY_COMPOUNDS = {
     "C00014",  # ammonia
     "C00080",  # proton
 }
+# Explicit identity aliases for KEGG name resolution; candidate ranking and Gate
+# classification use their own evidence rules. The identifier is retained for compatibility.
 _CURATED_CANDIDATE_MAPPINGS = {
     # KEGG stores this target under the generic lactate name, so the exact-name
     # search misses the benchmark candidate spelling.

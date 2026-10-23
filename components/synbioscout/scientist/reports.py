@@ -100,12 +100,12 @@ def render_report(run: ResearchRun):
     cards = assessment_cards(run, evaluations)
     specified = [row for row in cards if row["origin"] == "user_supplied"]
     if specified:
-        lines += ["", "## 指定候选评估", "", "候选结论包含评估状态、证据来源和适用条件；hold/needs_evidence 状态保留在对应候选中。", ""]
+        lines += ["", "## 输入候选评估", "", "候选结论包含评估状态、证据来源和适用条件；hold/needs_evidence 状态保留在对应候选中。", ""]
         for row in specified:
             lines += ["### " + cell(row["name"]), "",
                 "人群/目标终点：" + cell(row["population_requested"]) + " / " + cell(row["endpoint_requested"]), "",
                 "身份/科学状态：" + row["identity_status"] + " / " + row["scientific_status"], "",
-                "独立候选结论审查：" + ("已完成" if row["assessment_status"] == "completed_review" else "未审（没有当前有效收据）"), "",
+                "独立候选结论审查：" + ("已完成" if row["assessment_status"] == "completed_review" else "待审查（当前有效收据待生成）"), "",
                 "关联依据：" + ", ".join(row["evidence_ids"]), "",
                 "反证或混合结果：" + ", ".join(row["opposing_evidence_ids"]), "",
                 "未知项：" + "; ".join(row["unknowns"]), "",

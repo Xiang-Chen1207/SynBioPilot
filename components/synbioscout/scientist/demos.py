@@ -223,7 +223,7 @@ def inspect_demo_scores(csv_text: str, columns: dict[str, str]) -> dict[str, Any
 
     The result is JSON-safe, bounded and not persisted. Per-model previews keep
     high scores and up to half their slots for failed records; omitted counts
-    remain explicit. Rank is numeric descending order, not efficacy validation.
+    remain explicit. Rank is descending numeric order within each model; efficacy has a separate evaluation.
     """
     result = _empty_result()
     if not isinstance(csv_text, str):

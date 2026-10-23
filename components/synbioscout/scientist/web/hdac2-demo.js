@@ -17,7 +17,6 @@
   const CATALOG_TEXT = Object.freeze({
     "用于展示四模型评分流程的 50 分子界面示例。": "A 50-molecule interface example for the four-model scoring workflow.",
     "列名映射示例；实际列名以导入 CSV 为准。": "Column mapping example; use the actual column names in the imported CSV.",
-    "用于展示四模型评分流程的 50 个精选分子。": "A 50-molecule interface example for the four-model scoring workflow.",
     "HDAC2 / 4LXZ 固定靶点演示；更换靶点需要重建蛋白与口袋缓存，兼容的分子 embedding 可复用。": "Fixed-target HDAC2 / 4LXZ demo. A new target requires matching protein and pocket caches; compatible molecular embeddings may be reused.",
     "展示来源仓库记录的运行结果；本地执行状态见运行信息。": "Displays reported results from the source repository; local execution status is shown separately.",
     "计时分为准备阶段与评分阶段；模型加载、编码、构象生成和预热属于准备范围，准备阶段部分复用缓存。": "Timing separates preparation and scoring. Model loading, encoding, conformer generation and warmup are preparation tasks; preparation partly reuses caches.",
@@ -29,7 +28,6 @@
     "共同 50 分子": "Common 50 molecules",
     "常见 50 分子": "Common 50 molecules",
     "容量 1000 分子": "Capacity: 1,000 molecules",
-    "人工挑选的 50 分子演示集，不代表随机采样的科学基准。": "A 50-molecule interface example for the four-model scoring workflow.",
     "共同 50 分子加 950 分子；四模型共 4000 次评分尝试。": "The common 50 molecules plus 950 additional molecules; 4,000 scoring attempts across four models.",
     "常见 50 分子加 950 个容量测试分子；四模型共 4000 次评分尝试。": "The common 50 molecules plus 950 capacity-test molecules; 4,000 scoring attempts across four models.",
     "来源 README": "Source README",
@@ -49,16 +47,23 @@
     "已编码缓存的真实向量匹配；原始 SaProt 大权重未包含。": "Vector matching with precomputed embeddings; original SaProt weights are not included.",
     "模型 forward 推理；演示包包含 PSICHIC 权重。": "Model forward inference; the demo archive includes PSICHIC weights.",
     "基于已准备口袋药效团和构象的 CPU matching。": "CPU matching with a prepared pocket pharmacophore and molecular conformers.",
-    "HDAC2 / 4LXZ 固定靶点演示；更换靶点需要重建对应蛋白与口袋缓存，兼容的分子 embedding 可复用，不能只改名称。": "Fixed-target HDAC2 / 4LXZ demo. A new target requires matching protein and pocket caches; compatible molecular embeddings may be reused.",
+  });
+  // Historical software labels only: exact display aliases for saved records.
+  // Keep these keys readable for compatibility; current producers use the table above.
+  const LEGACY_CATALOG_TEXT = Object.freeze({
+    "用于展示四模型评分流程的 50 个精选分子。": "A 50-molecule interface example for the four-model scoring workflow.",
     "仓库历史 benchmark 是来源报告，未在本机复现；本机状态为 not_run。": "Displays reported results from the source repository; local execution status is shown separately.",
     "在线计时不含模型加载、编码、构象生成和预热；准备阶段部分复用缓存。": "Timing separates preparation and scoring. Model loading, encoding, conformer generation and warmup are preparation tasks; preparation partly reuses caches.",
+    "导入只派生本次 CSV 的数值排序；其靶点关联、候选池、预处理版本与真实模型输出来源均未核验。": "User-imported scores: numeric rankings from this CSV; target, candidate pool, preprocessing version and model provenance await verification.",
+    "人工挑选的 50 分子演示集，不代表随机采样的科学基准。": "A 50-molecule interface example for the four-model scoring workflow.",
+    "HDAC2 / 4LXZ 固定靶点演示；更换靶点需要重建对应蛋白与口袋缓存，兼容的分子 embedding 可复用，不能只改名称。": "Fixed-target HDAC2 / 4LXZ demo. A new target requires matching protein and pocket caches; compatible molecular embeddings may be reused.",
     "分数只用于各模型内部排序，不跨模型归一化，也不是药效、疾病疗效或结合实验证据。": "Demo scores describe within-model ranking. The root workflow separately builds cross-model consensus from full valid score-pool percentiles.",
     "科学比较需同模型、同候选池及同预处理版本；DrugCLIP common50 与 capacity1000 的 median/MAD 分数不能直接比较。": "Compare scores within the same model, candidate pool and preprocessing version. DrugCLIP median/MAD scales are specific to the common50 and capacity1000 pools.",
-    "导入只派生本次 CSV 的数值排序；其靶点关联、候选池、预处理版本与真实模型输出来源均未核验。": "User-imported scores: numeric rankings from this CSV; target, candidate pool, preprocessing version and model provenance await verification.",
     "演示不构成 ADMET、ChassisGate 生产能力、PK/PD、MD 或湿实验验证。": "This demo presents four-model scoring and CSV ranking checks for fixed HDAC2 inputs.",
     "用户导入数据未核验，不加入研究证据或运行历史，也不自动触发下载或模型执行。": "User-imported scores remain in this in-memory inspection; research evidence, run history and model execution are recorded separately."
   });
-  const catalogText = value => Object.prototype.hasOwnProperty.call(CATALOG_TEXT, value) ? CATALOG_TEXT[value] : str(value);
+  const catalogText = value => Object.prototype.hasOwnProperty.call(CATALOG_TEXT, value) ? CATALOG_TEXT[value] :
+    Object.prototype.hasOwnProperty.call(LEGACY_CATALOG_TEXT, value) ? LEGACY_CATALOG_TEXT[value] : str(value);
   const VALIDATION_TEXT = Object.freeze({
     invalid_input_type: "CSV input must be text.",
     byte_limit: "CSV exceeds the 500,000 UTF-8 byte limit.",
@@ -310,11 +315,11 @@
   function renderAnalysis() {
     const analysis = state.analysis;
     if (!analysis) return;
-    $("demoResultCaption").textContent = (state.synthetic ? "SYNTHETIC test data · " : "User import · ") + "user_imported_not_verified · Computational predictions only; association with HDAC2 or local execution is unverified.";
+    $("demoResultCaption").textContent = (state.synthetic ? "SYNTHETIC test data · " : "User import · ") + "user_imported_not_verified · Imported computational scores; target and execution provenance: awaiting verification.";
     const summary = node("div", "demo-analysis-summary");
     summary.append(metric("Accepted / rejected", str(analysis.accepted) + " / " + str(analysis.rejected), "CSV formatting checks"),
       metric("Successful / failed", str(analysis.summary?.successful) + " / " + str(analysis.summary?.failed), "Validated against the input status"),
-      metric("Models observed", str(analysis.summary?.models_observed), "Candidate pool and preprocessing are unverified"));
+      metric("Models observed", str(analysis.summary?.models_observed), "Candidate pool and preprocessing verification: pending"));
     $("demoResultSummary").replaceChildren(summary);
     const select = $("demoResultModel"), previous = select.value;
     const groups = items(analysis.by_model);

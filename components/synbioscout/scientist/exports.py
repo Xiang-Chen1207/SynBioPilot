@@ -69,7 +69,7 @@ def table_exports(run: ResearchRun) -> dict[str, bytes]:
         "population_requested": view.brief.population, "endpoint_requested": view.brief.phenotype,
         "scientific_status": by_id.get(c.candidate_id, {}).get("scientific_status", "needs_evidence"),
         "next_questions": by_id.get(c.candidate_id, {}).get("next_questions", [])} for c in view.candidates]
-    candidates.extend({**row, "role_label": "指定候选尚未唯一关联实体"} for row in assessments if not row["candidate_id"])
+    candidates.extend({**row, "role_label": "评估输入的唯一实体关联待确定"} for row in assessments if not row["candidate_id"])
     for candidate in candidates:
         card = by_id.get(candidate.get("candidate_id"), {})
         evaluation = card.get("validated_evaluation") or {}
@@ -242,13 +242,13 @@ def export_research(store: ProjectStore, run: ResearchRun, format_name: str):
     add("README.txt", ("SynBioScout AI Scientist 研究结果包\n"
         "report.md: 阅读报告；targets/candidates/evidence.csv: 数据表；research.json: 结构化结果。\n"
         "budget_failures.csv: 安全预算收据表；单次接收帽、有效余量和限制类别使用 UTF-8 字节计量；提供方计费另行记录。\n"
-        "target_files/: 实际存在且属于当前项目的 PDB/FASTA/SDF。缺失的文件没有补造。\n"
+        "target_files/: 当前项目已有的 PDB/FASTA/SDF；文件状态见清单。\n"
         "presentation.derived_view=true 表示软件展示视图；历史角色标签注明文本来源和当前审查状态。\n"
         "不含模型权重、环境、API 密钥、推理日志、缓存或其他项目数据。\n"
         "包含引用片段与来源元数据，不打包论文全文；已获取原文继续在本地软件查看。\n"
         "evidence.csv 的 source_scope/current_scope 表示实际材料范围；stored_source_scope 保留原存储标签。\n"
         "CSV 的原文窗口仅在本地正文按 Unicode 码点核对跨度后填写；空值表示未核实。\n"
-        "JSON 已省略来源正文，因此其中 original_window 为 null；声明位置仍可见于已保存元数据，不能当作本导出已核验原文。\n"
+        "JSON 的来源正文在原始快照中保存，original_window 为 null；元数据中的声明位置保留其原记录状态。\n"
         "本地文件路径在导出副本中省略；原始快照留在本机，来源 URL 与哈希保留。\n"
         "科研用途。导出内容包含当前研究与证据；分享前检查私人研究资料。\n").encode())
     manifest = {"product": "SynBioScout AI Scientist", "version": __version__,

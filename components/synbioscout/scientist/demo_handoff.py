@@ -1,4 +1,4 @@
-"""Read-only input checklist; no model, feature generation or scientific validation."""
+"""Input checklist reporting file presence and the recorded preparation status."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -13,8 +13,8 @@ MODEL_INPUTS = {
     },
     "sprint": {
         "label": "SPRINT", "inputs": ["protein_pdb"],
-        "contract": "明确选择的蛋白链，SaProt输入不超过1022残基；不自动截断。",
-        "next_step": "为本次链重新生成Foldseek/SaProt特征；不能沿用其它靶点向量。",
+        "contract": "输入为已解析的完整蛋白链；SaProt 接受长度不超过1022残基的序列。",
+        "next_step": "为本次蛋白链生成匹配的 Foldseek/SaProt 特征与靶点向量。",
     },
     "psichic": {
         "label": "PSICHIC", "inputs": ["sequence_fasta"],
@@ -24,7 +24,7 @@ MODEL_INPUTS = {
     "pharmaconet": {
         "label": "PharmacoNet", "inputs": ["protein_pdb", "reference_ligand_sdf"],
         "contract": "准备好的蛋白与同坐标系参考配体，用参考配体定位口袋。",
-        "next_step": "为本次口袋生成药效团；分子构象失败保持失败，不补造得分。",
+        "next_step": "为本次口袋生成药效团；构象状态与可用评分分别记录。",
     },
 }
 
@@ -32,8 +32,8 @@ MODEL_INPUTS = {
 def target_screening_checklist(package: TargetPackage, project_root: Path) -> dict:
     """Report recorded readiness plus scoped file presence, without changing history.
 
-    A file-presence check is deliberately not a revalidation of coordinates,
-    sequence, ligand identity, model weights or cached features.
+    This check reads file presence. Coordinates, sequence, ligand identity,
+    model weights and cached features retain their separate validation status.
     """
     root = Path(project_root).resolve()
     files = []
@@ -67,11 +67,11 @@ def target_screening_checklist(package: TargetPackage, project_root: Path) -> di
         ),
         "demo_cache_compatibility": "not_checked",
         "limitations": [
-            "输入状态不表示模型环境、权重或缓存已就绪，也不表示评分已运行。",
-            "本检查未重新验证文件内容；修改过的文件须重新准备与审查。",
-            "HDAC2演示缓存仅对应其固定构建体、链、序列、口袋和版本，不能只改靶点名复用。",
+            "输入就绪、模型环境、权重、缓存与评分执行状态分别记录。",
+            "本检查读取文件存在状态；文件内容变更后重新准备并审查。",
+            "HDAC2 缓存对应其构建体、链、序列、口袋和版本；新靶点使用匹配的新缓存。",
             "ADMET、ChassisGate、对接和MD保持独立阶段，未因本检查而执行。",
-            "文献路线的候选分子不必强制作用于这个靶点。",
+            "文献候选与靶点筛选分别保留各自的作用机制和靶点关系。",
         ],
     }
 

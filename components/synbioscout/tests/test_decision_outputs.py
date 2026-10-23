@@ -36,7 +36,7 @@ def test_only_opposing_evidence_is_held():
     c = candidate(routes=["literature"], evidence_ids=["ev_fixture"])
     decide_candidates([c], [evidence("opposes")])
     assert c.decision == "hold"
-    assert "not a universal toxicity" in c.decision_reasons[0]
+    assert "within its source conditions" in c.decision_reasons[0]
 
 
 def test_admet_bounds_exclusion_overrides_positive_gate():

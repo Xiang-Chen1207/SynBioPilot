@@ -512,7 +512,7 @@ check("full text original window and acquisition facts stay distinct in source l
   const scope = normalize(ui.sourceScopeView(source));
   assert.deepEqual(scope,{original_scope:"full_text",current_scope:"local_excerpt",local_excerpt:true,
     original_window:{start:11889,end:14151},acquisition:"reused",acquisition_origin:"background_reuse",fresh_fulltext:false});
-  assert.match(ui.sourceScopeLabel(source),/Original Full text.*contiguous excerpt.*11889, 14151.*Reused.*not a full-text retrieval this run/);
+  assert.match(ui.sourceScopeLabel(source),/Original Full text.*contiguous excerpt.*11889, 14151.*Reused saved excerpt/);
   assert.equal(ui.sourceScopeView({evidence_scope:"full_text"}).fresh_fulltext,false);
   assert.equal(ui.sourceScopeView({evidence_scope:"full_text",metadata:{acquisition_origin:"current_run_retrieval"}}).fresh_fulltext,false);
   assert.equal(ui.sourceScopeView({evidence_scope:"full_text",metadata:{acquisition_origin:"current_run_full_text"}}).fresh_fulltext,true);

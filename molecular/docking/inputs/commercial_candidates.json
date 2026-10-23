@@ -45,9 +45,9 @@
     "catalog": "HY-10225",
     "cas": "866323-14-0",
     "dmso": "100 mg/mL（需超声）",
-    "hdac2_evidence": "商用广谱 HDAC 对照；供应商常列 27 nM 是 HeLa 提取物总 HDAC，不能标成 HDAC2 IC50",
+    "hdac2_evidence": "商用广谱 HDAC 对照；供应商常列 27 nM 对应 HeLa 提取物总 HDAC 抑制指标，HDAC2 特异 IC50 单独记录",
     "activity_url": "https://www.medchemexpress.com/Belinostat.html",
-    "priority": "备选广谱阳性；不以 27 nM 当作 HDAC2 特异数值",
+    "priority": "备选广谱阳性对照；27 nM 指标范围为 HeLa 提取物总 HDAC",
     "vendor_url": "https://www.medchemexpress.com/Belinostat.html",
     "datasheet_url": "https://file.medchemexpress.com/batch_PDF/HY-10225/Belinostat-DataSheet-MedChemExpress.pdf"
   },

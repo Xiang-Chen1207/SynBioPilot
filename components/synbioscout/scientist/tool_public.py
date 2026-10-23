@@ -817,7 +817,7 @@ def public_tool_task(value: Any) -> str:
 
 
 def public_tool_warning(value: str) -> str:
-    """Do not echo unvalidated names from historical invalid-proposal warnings."""
+    """Project validated public names from historical proposal warnings."""
     if value.lstrip().casefold().startswith("invalid structured tool proposal"):
         return INVALID_TOOL_PROPOSAL_WARNING
     return value

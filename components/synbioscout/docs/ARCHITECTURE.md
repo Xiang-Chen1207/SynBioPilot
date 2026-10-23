@@ -35,9 +35,9 @@ English browser UI / HTTP API / CLI
 
 Standard research and Co-Scientist research share evidence and identity contracts. In the Co-Scientist workbench, Supervisor, Generation, Proximity, Reflection, Ranking, Evolution and Meta-review are roles in one orchestration system. Proximity uses rule-based grouping, while model-backed roles operate through the configured backend.
 
-Specified-candidate assessment prioritizes evidence extraction, an independent semantic review, canonical identity and an independent review of the candidate conclusion. Hypothesis generation and its later stages are optional extensions when the remaining budget admits them.
+Candidate-assessment mode prioritizes evidence extraction, an independent semantic review, canonical identity and an independent review of the candidate conclusion. Hypothesis generation and its later stages are optional extensions when the remaining budget admits them.
 
-The new extraction request uses compact v2: a quotation and its scope are written once, and findings refer to explicit typed evidence keys. Expansion is deterministic and does not invent a model claim. Later input size includes the expanded content. Old saved records remain readable.
+The new extraction request uses compact v2: a quotation and its scope are written once, and findings refer to explicit typed evidence keys. Expansion deterministically resolves the typed evidence keys to their recorded text. Later input size includes the expanded content. Old saved records remain readable.
 
 ## Tools and interoperability
 
@@ -47,7 +47,7 @@ The experiment panel analyzes supplied tabular measurements. Downstream Target2L
 
 ## Scientific record integrity
 
-Evidence preserves source, continuous span, entity, study system, condition, endpoint and direction. Reviews bind to the current assessment and identity revisions. New relevant evidence can invalidate a previous conclusion and require review. Shared ambiguous aliases are not assigned to a candidate by guessing.
+Evidence preserves source, continuous span, entity, study system, condition, endpoint and direction. Reviews bind to the current assessment and identity revisions. New relevant evidence can invalidate a previous conclusion and require review. Shared ambiguous aliases retain unresolved identity status.
 
 Fixed per-call caps, global budgets, future-stage reservations and in-flight reservations are separate. Public receipts distinguish received from accepted output. The historical fields named `max_input_tokens` and `max_output_tokens` use UTF-8 byte accounting in this implementation; provider token usage and billing are separate measures.
 

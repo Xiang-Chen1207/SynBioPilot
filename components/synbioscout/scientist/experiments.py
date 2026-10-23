@@ -216,7 +216,7 @@ def _fit_dose(group: pd.DataFrame, endpoint: str) -> dict[str, Any]:
         "endpoint": endpoint,
         "ic50": None,
         "half_response_dose": None,
-        "interpretation": "A fitted response midpoint is not an identified compound's IC50.",
+        "interpretation": "This value is a fitted assay-response midpoint; compound-specific IC50 requires its own identity and assay definition.",
     }
     if endpoint.strip().lower() in {"", "unknown", "unspecified"}:
         result["reason"] = "A recorded assay endpoint is required to interpret a dose response."
@@ -452,7 +452,7 @@ def _report(summary: dict[str, Any]) -> str:
         (
             "Technical measurements were averaged within each biological replicate and time/dose point. "
             "Confidence intervals use biological replicates; they are descriptive and assume independent "
-            "biological sampling. Shared replicate identifiers across groups do not establish a paired design."
+            "biological sampling. Paired-design status requires experimental-design metadata in addition to replicate identifiers."
         ),
         "",
     ]
@@ -589,7 +589,7 @@ def analyze_experiment(csv_path: Path, spec: ExperimentSpec, output: Path) -> di
             outcome = "measured"
     if not spec.qc_passed and not errors:
         analysis["warnings"].append(
-            "Assay QC did not pass; numerical measurements cannot establish a biological outcome."
+            "Assay QC status: failed. Measurements are retained; biological interpretation awaits passing QC."
         )
     if "SYNTHETIC" in spec.name.upper():
         analysis["warnings"].append(

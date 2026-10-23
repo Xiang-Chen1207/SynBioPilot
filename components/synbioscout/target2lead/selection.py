@@ -281,7 +281,7 @@ def _select_merged(cfg):
         return row
 
     all_rows = [assess(row) for row in read_csv(root / 'top100_membership.csv')]
-    # Defensive dedup also prevents manually supplied membership aliases taking two slots.
+    # Deduplicate membership aliases before allocating candidate slots.
     per_model = {}
     for row in all_rows:
         key = row['model'], row['compound_id']

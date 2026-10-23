@@ -155,7 +155,7 @@ class QuickGOArguments(_Page):
 _TOOLS = {
     "europepmc_search": (
         "europe_pmc", LiteratureArguments,
-        "检索文献摘要和 DOI/PMID；不自动读取全文，不把摘要当作完整研究。",
+        "检索文献摘要和 DOI/PMID；全文获取通过独立工具执行，读取范围随来源记录。",
     ),
     "opentargets_search": (
         "open_targets", OpenTargetsArguments,
@@ -171,7 +171,7 @@ _TOOLS = {
     ),
     "pubchem": (
         "pubchem", PubChemArguments,
-        "核对唯一化学身份与 SMILES/InChIKey；不预测活性或生产能力。",
+        "核对唯一化学身份与 SMILES/InChIKey；活性与生产能力通过对应评估记录。",
     ),
     "chembl": (
         "chembl", ChEMBLArguments,
@@ -179,7 +179,7 @@ _TOOLS = {
     ),
     "reactome_pathways": (
         "reactome", ReactomeArguments,
-        "查已核对物种的 UniProt—通路归属；本地最多两页，不做富集或通路效应预测。",
+        "查已核对物种的 UniProt—通路归属，本地返回最多两页注释记录。",
     ),
     "quickgo_annotations": (
         "quickgo", QuickGOArguments,
@@ -365,13 +365,13 @@ class ToolRegistry:
         known = type(has_more) is bool or total is not None
         truncated = (has_more is True or (total is not None and total > len(sources))) if known else len(sources) >= args.limit
         result.status = "truncated" if truncated else ("ok" if sources else "empty")
-        result.warnings = ["Abstract-level search only; not a systematic review or full-text audit"]
+        result.warnings = ["Source scope: abstracts; query scope and returned records accompany each result"]
         if truncated and known:
             result.warnings.append("Bounded search page only; additional reported hits/pages were not fetched")
         elif truncated and not known:
             result.warnings.append("Result limit reached; total literature coverage is unknown")
         elif not known:
-            result.warnings.append("Total literature coverage is unknown; a returned batch is not an exhaustive search")
+            result.warnings.append("Returned-batch scope recorded; total literature coverage: unknown")
 
     def _opentargets_search(self, args, result):
         rows = _rows(self.sources.search_entity(args.query, args.entity))

@@ -176,7 +176,7 @@ def test_name_resolves_pubchem_then_exact_chembl_before_query_with_parent_trace(
     assert stack.ledger.snapshot()["tool_calls"] == stack.ledger.snapshot()["http_attempts"] == 3
     assert all(source.evidence_scope == "database" for call in stack.calls for source in call.sources)
     assert result.sources[0].metadata["scope"] == "database_annotation_not_intervention_or_production_proof"
-    assert "heterogeneous" in " ".join(result.warnings)
+    assert "assays are reported separately by endpoint, unit and experimental system" in " ".join(result.warnings)
     assert not stack.responses
 
 

@@ -160,19 +160,19 @@ def decide_candidates(candidates: list[CandidateRecord], evidence: list[Evidence
             reasons.append("Literature claim review did not pass; retain draft for audit, not recommendation")
         elif records and any(e.polarity == "opposes" for e in records) and not any(e.polarity == "supports" for e in records):
             candidate.decision = "hold"
-            reasons.append("Attached evidence opposes the recorded design endpoint; not a universal toxicity conclusion")
+            reasons.append("Attached evidence opposes the recorded design endpoint within its source conditions")
         elif candidate.admet.get("status") == "failed" or candidate.admet.get("admet_status") == "failed":
             candidate.decision = "hold"
-            reasons.append("ADMET execution failed; not a biological negative")
+            reasons.append("ADMET execution failed; biological interpretation awaits a valid result")
         elif candidate.admet.get("selection_pass") is False:
             candidate.decision = "hold"
             reasons.append("ADMET does not satisfy the explicitly configured selection bounds")
         elif candidate.gate.get("gate_status") == "failed":
             candidate.decision = "hold"
-            reasons.append("Gate execution failed; not a biological negative")
+            reasons.append("Gate execution failed; chassis interpretation awaits a valid result")
         elif candidate.role in CONTEXT_ROLES:
             candidate.decision = "hold"
-            reasons.append(f"Role {candidate.role} is context, not a therapeutic shortlist candidate")
+            reasons.append(f"Role {candidate.role} belongs to the context-molecule view")
         elif candidate.gate.get("gate_status") == "success" and candidate.gate.get("gate_class") in ("A1", "A2", "B1", "B2"):
             has_support = any(e.polarity == "supports" for e in records)
             opposed = any(e.polarity in ("opposes", "mixed") for e in records)

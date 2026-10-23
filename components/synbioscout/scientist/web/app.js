@@ -23,13 +23,13 @@ const LABELS = {queued: "Queued", running: "Research in progress", completed: "E
   measured: "Measurement recorded", invalid_data: "Invalid data", qc_failed: "QC failed",
   insufficient_data: "Insufficient data", non_detection: "Not detected", interrupted: "Interrupted",
   skipped: "Skipped", proposed: "Proposed · awaiting review", reviewed: "Automatically reviewed", revised: "Revised · awaiting validation",
-  needs_evidence: "Needs evidence", withheld: "Withheld", human_review_needed: "Human review required",
+  needs_evidence: "Needs evidence", withheld: "Withheld", human_review_needed: "Plan awaiting expert review",
   completed_review: "Independent assessment reviewed", unreviewed: "Independent conclusion unreviewed",
   limited_source_findings: "Scoped source findings · awaiting validation", mixed_evidence: "Mixed evidence · scope retained",
   no_supported_benefit: "Benefit not supported within current scope",
   source_scope_only: "Source-reported scope only", population_uncertain: "Population applicability unconfirmed", nonhuman_or_unknown: "Nonhuman or unspecified system",
   source_claim_supported_pending_validation: "Specific claim supported by sources · validation pending",
-  awaiting_measurement: "Awaiting measurement", user_supplied: "User-supplied candidate", synthesis: "Cross-source research inference",
+  awaiting_measurement: "Awaiting measurement", user_supplied: "Assessment input", synthesis: "Cross-source research inference",
   direct_evidence: "Direct evidence", adverse: "Adverse evidence", exact: "Exact strain match",
   other_strain: "Other strain", native_synthesis: "Native synthesis hypothesis", precursor_conversion: "Precursor-conversion hypothesis",
   exogenous: "Exogenous supply hypothesis", known_application: "Known application", potential_gap: "Potential research gap",
@@ -48,44 +48,49 @@ const AGENT_ROLES = {supervisor: ["Supervisor", "Coordination & budget"], genera
 // Exact display aliases for known software-authored text only. Original records,
 // scientific statements, quotes and user inputs remain untouched.
 const SYSTEM_UI_TEXT = Object.freeze({
+  "重新审查已存版本与来源；获取方式为复用，沿用原检索记录": "Re-review saved versions and sources; acquisition: reused, with original retrieval records",
+  "已完成检索；模型研究阶段待启用后运行": "Retrieval completed; model research awaits an enabled backend",
+  "复用已启用的核对来源包，获取时间沿用原记录": "Reuse the enabled source package with its original acquisition records",
+  "复用已存公开来源，获取时间沿用原检索记录": "Reuse saved public sources with their original retrieval records",
+  "复用已核对的背景化学身份，获取时间沿用原记录": "Reuse checked background chemical identities with their original acquisition records",
+  "修订版复用前版来源，近期检索状态沿用原记录": "Revision reuses prior sources and retains their recorded recent-search status",
   "任务锚定": "Problem anchoring",
   "疾病、具体表型、物种、菌株、工程/资源边界、已有候选": "Disease, specific phenotype, species, strain, engineering/resource boundaries and existing candidates",
-  "无法确定终点则保留澄清问题；不擅自改疾病或菌株": "Retain clarification questions when the endpoint is unclear; do not change the disease or strain",
+  "保留任务中的疾病与菌株；终点待明确时记录澄清问题": "Retain the task disease and strain; record clarification questions for an unspecified endpoint",
   "文献地图与证据": "Literature map & evidence",
   "任务锚、已有文献线索、相反发现检索式": "Problem anchor, existing literature leads and counterevidence queries",
   "原总预算不变；默认8检索按地图2/逐主张3/近期2/反馈1分配，最多2开放全文": "Keep the original total budget: default eight searches allocated to landscape 2 / claim-level 3 / recent work 2 / feedback 1, with at most two open-access full texts",
-  "无原文则不生成有来源结论": "Do not create source-supported conclusions without retrieved source text",
-  "摘要不是完整论文": "Source reading scope is labelled as abstract or full text",
+  "来源结论以已获取原文为依据": "Source-supported conclusions use retrieved source text",
+  "来源读取范围标记为摘要或全文": "Source reading scope is labelled as abstract or full text",
   "同研究跨源去重": "Deduplicate the same study across sources",
   "双视角假说生成": "Two-perspective hypothesis generation",
-  "已审查证据、文献地图、用户给定候选": "Reviewed evidence, literature map and user-supplied candidates",
+  "已审查证据、文献地图与评估模式的候选输入": "Reviewed evidence, literature map and candidate inputs for assessment mode",
   "先保留1个必要视角；正式审查及Meta预算充足才加入第二独立视角，合计受配置假说上限约束": "Preserve one required perspective; add a second separate perspective only when formal-review and meta-review budgets permit, within the configured hypothesis limit",
-  "仅机械去重，不由生成者做质量淘汰": "Use mechanical deduplication; the generator does not eliminate ideas by self-assessed quality",
-  "用户给定候选不算自主发现": "Track candidate origin: user input or identification during the current research workflow",
-  "保留候选来源：用户输入或当前研究流程识别": "Track candidate origin: user input or identification during the current research workflow",
+  "生成阶段按规则去重，候选质量由后续审查评价": "Generation applies rule-based deduplication; subsequent review evaluates candidate quality",
+  "保留候选来源：用户输入或当前研究流程识别": "Track candidate origin: assessment input or identification during the current research workflow",
   "逐主张查新": "Claim-level novelty search",
   "核心主张、实际分子/机制与研究条件": "Core claims, actual molecule/mechanism and study conditions",
   "默认预留2个近期查询；所有假说记录查询计划与未执行原因，共享原检索/HTTP/论文预算": "Reserve two recent-work queries by default; record query plans and skip reasons for all hypotheses within the original shared search/HTTP/paper budget",
-  "未检出不是原创证据": "Novelty conclusions link to query scope and related-work comparisons",
-  "无检索记录不得宣称有查新结论": "Novelty conclusions use recorded search results",
+  "查新结论关联查询范围和相关工作对照": "Novelty conclusions link to query scope and related-work comparisons",
+  "查新结论使用已记录的检索结果": "Novelty conclusions use recorded search results",
   "独立上下文反思": "Separate-context reflection",
   "完整假说、支持/反证、研究条件，不含生成者自我评分": "Full hypotheses, support/counterevidence and conditions, excluding generator self-scores",
   "1初始审查、最多3场同约束比较、1修订后复核": "One initial review, up to three same-constraint comparisons and one post-revision review",
   "证据不足/不可比较可弃权": "Abstain when evidence is insufficient or options are incomparable",
-  "数据库注释不证明因果或生产": "Database annotations, causal evidence and production evidence are recorded separately",
+  "数据库注释、因果证据与生产证据分别归档": "Database annotations, causal evidence and production evidence are recorded separately",
   "一轮修订与研究合同": "One revision round & research plan",
   "任务锚、可追溯批评、证据缺口与实际检索观察": "Problem anchor, traceable critiques, evidence gaps and actual search observations",
-  "最多1轮修订；新版不继承旧比较胜场": "At most one revision round; new versions do not inherit old comparison wins",
+  "最多1轮修订；各版本分别记录审查与比较结果": "At most one revision round; each version records its own review and comparison results",
   "缺少修订依据就保留原版": "Retain the original version without a basis for revision",
   "新主张重新审查": "Re-review new claims",
   "无测量时参数值保持null": "Keep parameter values null when measurements are unavailable",
-  "检索文献摘要和 DOI/PMID；不自动读取全文，不把摘要当作完整研究。": "Search abstracts and DOI/PMID identifiers; do not automatically retrieve full text or treat abstracts as complete studies.",
+  "检索文献摘要和 DOI/PMID；全文获取通过独立工具执行，读取范围随来源记录。": "Search abstracts and DOI/PMID identifiers; a separate tool retrieves full text and each source records its reading scope.",
   "解析疾病或靶点名称；同名结果是待核对的身份线索。": "Resolve disease or target names; same-name matches are identity leads requiring review.",
-  "检索疾病—靶点关联；关联分数不是干预疗效或因果概率。": "Retrieve disease-target associations and their sources; association scores follow the database definitions.",
+  "检索疾病—靶点关联及其数据来源，关联分数按数据库定义记录。": "Retrieve disease-target associations and their sources; association scores follow the database definitions.",
   "按基因符号及物种核对唯一蛋白身份，保留原始 UniProt 数据。": "Check unique protein identity by gene symbol and species, retaining original UniProt data.",
-  "核对唯一化学身份与 SMILES/InChIKey；不预测活性或生产能力。": "Check unique chemical identity and SMILES/InChIKey; do not predict activity or production capacity.",
+  "核对唯一化学身份与 SMILES/InChIKey；活性与生产能力通过对应评估记录。": "Check unique chemical identity and SMILES/InChIKey; activity and production capacity have their own assessments.",
   "有界查询分子、靶点、assay、bioactivity 或 mechanism；保留单位、关系符号和物种。": "Run bounded molecule, target, assay, bioactivity or mechanism queries, retaining units, relation operators and species.",
-  "查已核对物种的 UniProt—通路归属；本地最多两页，不做富集或通路效应预测。": "Retrieve species-checked UniProt–pathway relationships, with at most two pages; no enrichment or pathway-effect prediction.",
+  "查已核对物种的 UniProt—通路归属，本地返回最多两页注释记录。": "Retrieve species-checked UniProt–pathway annotations, returning at most two pages.",
   "按蛋白与 taxon 查询 GO 注释，保留 qualifier、ECO、GO evidence 和参考来源。": "Query GO annotations by protein and taxon, retaining qualifiers, ECO, GO evidence and references.",
   "Supervisor · 任务与文献": "Supervisor · task & literature",
   "Generation · 双视角生成": "Generation · two perspectives",
@@ -97,10 +102,10 @@ const SYSTEM_UI_TEXT = Object.freeze({
   "证据整理与独立语义复核": "Evidence synthesis & independent semantic review",
   "资源预检跳过可选阶段": "Resource preflight skipped an optional stage",
   "请求在发送前被预算阻止": "Budget blocked the request before dispatch",
-  "独立上下文调用；只返回结构化研究产物，不公开私密思维链。": "Separate-context call; returns structured research artifacts only, without private chain-of-thought.",
+  "独立上下文调用，返回结构化研究产物；私密推理保留在模型内部。": "Separate-context call returning structured research artifacts; private reasoning remains internal.",
   "结构化结果已返回，下一阶段仍需核对适用性。": "Structured results returned; applicability still requires review in the next stage.",
   "本地调用准备或记录保存失败；实际模型调用另行计数。": "Local call preparation or record persistence failed. Actual model calls are counted separately.",
-  "调用失败或超出预算；没有补造完成结果。": "The call failed or exceeded its budget. Review its saved status and recovery options.",
+  "调用失败或超出预算；已保存状态与恢复信息。": "The call failed or exceeded its budget; status and recovery information are saved.",
   "可选调用没有可用结果；保留已审版本，继续尝试必要收尾。": "The optional call produced no usable result. Retain reviewed versions and attempt required closing steps.",
   "独立审查候选结论及适用范围": "Independently review the candidate conclusion & applicability",
   "独立候选结论审查": "Independent candidate conclusion review",
@@ -108,10 +113,10 @@ const SYSTEM_UI_TEXT = Object.freeze({
   "独立候选评估已保存；假说生成、假说审查与Meta扩展未执行。": "Independent candidate assessment saved. Hypothesis generation, hypothesis review and meta-review expansion were not run.",
   "候选评估后的可选假说扩展": "Optional hypothesis expansion after candidate assessment",
   "优先完成必要的同版本审查与模型收尾；此可选动作未执行。": "Prioritize required same-version review and model closing steps; this optional action was not run.",
-  "固定协调器核对已保存实体身份；不由模型选择候选": "The coordinator checks the identity of saved candidates",
+  "协调器核对研究候选的唯一化学身份": "The coordinator checks the unique chemical identity of research candidates",
   "既有固定补证查询；经相同参数契约与共享预算执行": "Existing fixed evidence query, executed under the same parameter contract and shared budget",
   "未注册工具": "Unregistered tool",
-  "使用有界只读工具；观察结果不是疗效判断。": "Tool observations record query scope, data sources and returned content.",
+  "工具观察记录查询范围、数据来源和返回内容。": "Tool observations record query scope, data sources and returned content.",
   "模型提出补证；旧提案未记录具体缺口文字": "The model requested additional evidence; the legacy proposal did not record a specific gap",
   "形成最少问题卡；有收尾余量才加入第二视角": "Create the minimum question cards; add a second perspective only if closing budget remains",
   "保存有界补证计划": "Save a bounded evidence-gathering plan",
@@ -119,20 +124,18 @@ const SYSTEM_UI_TEXT = Object.freeze({
   "模型补证 JSON 未通过确定性解析；仅记录参数拒绝，不执行 HTTP": "Evidence-request JSON failed deterministic parsing. Record parameter rejection only; do not perform HTTP requests.",
   "按实体、机制、菌株、条件和终点机械去重": "Deduplicate by entity, mechanism, strain, conditions and endpoint",
   "在同任务约束下比较最多三个方案": "Compare up to three options under the same task constraints",
-  "条件不匹配：不进行 LLM 胜负判断": "Conditions differ: skip LLM winner selection",
+  "条件匹配检查未通过，本次比较状态为跳过": "Condition matching failed; comparison status: skipped",
   "按证据与批评最多修订一轮": "Revise once at most, guided by evidence and critique",
-  "没有具体修订依据，不伪造版本变化": "No specific basis for revision; do not fabricate version changes",
-  "预算预检不足；保留已审版本，不生成未复核修订": "Budget preflight failed; retain reviewed versions and do not create unreviewed revisions",
-  "据批评修订，不继承旧胜场": "Revise from critique without inheriting previous wins",
+  "未触发修订条件，保留当前版本": "Revision conditions were not met; retain the current version",
+  "预算预检不足，保留已审版本；修订阶段状态为跳过": "Budget preflight failed; retain reviewed versions and mark revision as skipped",
+  "据批评修订，审查与比较结果按版本记录": "Revise from critique and record reviews and comparisons for each version",
   "修订调用未取得可用结果；保留已审版本": "Revision call produced no usable result; retain reviewed versions",
   "修订版本重新审查": "Re-review revised versions",
   "形成研究合同与 NasoTwin 测量需求": "Create research plans & NasoTwin measurement needs",
   "总审与最多三个研究合同": "Meta-review & up to three research plans",
-  "已存版本与来源重新审查；没有本轮新检索": "Re-review saved versions and sources; no new search this run",
   "复用已保存来源与草稿，逐引用重新核对": "Reuse saved sources and drafts; recheck each reference",
-  "本轮复用已存来源和草稿，不把它们算作新检索或独立科学验证；审查和比较重新执行。": "This run continues saved sources and drafts, repeats reviews and comparisons, and retains the original retrieval records.",
+  "本轮继续已保存的来源与草稿，重新执行审查和比较；来源保留原检索记录。": "This run continues saved sources and drafts, repeats reviews and comparisons, and retains the original retrieval records.",
   "冻结问题、菌株和研究边界": "Freeze the question, strain & research boundaries",
-  "模型禁用；只有检索观察，没有已判读假说": "Model disabled; retrieval observations only, with no interpreted hypotheses",
   "建立文献地图，保留相反发现": "Build a literature map, retaining opposing findings",
   "候选评估优先审查已有材料；本阶段未执行在线扩展": "Candidate assessment prioritizes existing material; online expansion was not run at this stage",
   "核验原文与独立语义审查；解析靶点和分子身份": "Verify source text and independent semantics; resolve target and molecule identities",
@@ -146,12 +149,11 @@ const SYSTEM_UI_TEXT = Object.freeze({
   "逐假说审查支持、反证与底盘缺口": "Review support, counterevidence & chassis gaps for each hypothesis",
   "bio-research-review：完整初始版本审查": "bio-research-review: complete initial-version review",
   "停止并保存已有证据与假说": "Stop and save existing evidence & hypotheses",
-  "未执行，不显示虚构成果": "Not run",
-  "软件流程完成不等于候选有效；引文审查不等于独立实验或临床验证。": "Candidate conclusions include assessment status, evidence sources and applicable conditions.",
+  "执行状态：待运行": "Not run",
   "候选结论包含评估状态、证据来源和适用条件。": "Candidate conclusions include assessment status, evidence sources and applicable conditions.",
-  "指定名称尚未唯一关联本轮候选；未猜测身份或关联证据": "The candidate name awaits a unique chemical-identity link",
-  "核对指定候选的唯一化学身份并形成可追溯评估记录": "Check the specified candidate's unique chemical identity and create a traceable assessment",
-  "化学身份仍需核对；不能由名称推定化学形式或结构": "Chemical identity still requires checking; names do not establish chemical form or structure",
+  "候选名称的唯一化学身份关联待确定": "The candidate name awaits a unique chemical-identity link",
+  "核对评估输入的唯一化学身份并形成可追溯记录": "Check the assessment input’s unique chemical identity and create a traceable record",
+  "化学身份待核对：需要唯一化学形式与结构记录": "Chemical identity pending: a unique chemical form and structure record is required",
   "未指定": "Not specified",
   "未知": "Unknown",
   "明确疾病、表型和研究问题": "Define the disease, phenotype & research question",
@@ -160,34 +162,34 @@ const SYSTEM_UI_TEXT = Object.freeze({
   "核对蛋白及化学实体身份": "Check protein & chemical entity identities",
   "自动准备四模型输入包": "Automatically prepare four-model input packages",
   "部分引用不存在、未通过审查或证据方向不符，已从可用证据中移除": "Some references were missing, unreviewed or directionally inapplicable and were removed from usable evidence",
-  "没有已审查的支持证据，不能形成已支持的干预结论": "No reviewed supporting evidence is available; a supported intervention conclusion cannot be formed",
+  "干预结论状态为待补证，以已审查的支持证据为判据": "Intervention conclusion status: needs evidence; support is evaluated against reviewed evidence",
   "原草稿菌株与任务不符；需对实际菌株重新补证": "The draft strain differs from the task; gather evidence for the actual strain",
-  "菌株错配已纠正，不沿用其他菌株生产结论": "Strain mismatch corrected; production conclusions from other strains are not inherited",
-  "宿主通路、GO或药理注释不是底盘生产证据": "Chassis-production assessment uses strain-and-condition-matched production, mechanism and model evidence",
-  "缺少 exact 菌株与条件匹配的生产依据，禁止直接外推": "Exact strain-and-condition production evidence is missing; do not extrapolate directly",
+  "菌株错配已纠正，生产结论按实际菌株重新评价": "Strain mismatch corrected; production conclusions are reassessed for the task strain",
+  "底盘生产评价使用菌株和条件匹配的生产、机制及模型证据": "Chassis-production assessment uses strain-and-condition-matched production, mechanism and model evidence",
+  "生产适用性待评估：需要菌株与条件精确匹配的生产依据": "Production applicability pending: exact strain-and-condition production evidence is required",
   "本任务未指定生产菌株，底盘生产适用性尚未评估": "No production strain was specified; chassis-production applicability is not assessed",
   "审查缺失或重复，保留待复核状态": "Review is missing or duplicated; retain a pending-review state",
   "完整版本特异审查": "Complete version-specific review",
   "该假说缺少其自身已审查的支持证据": "This hypothesis lacks its own reviewed supporting evidence",
-  "证据适用性、底盘证据/缺口、可检验性与资源匹配；不把新意混成可信度概率": "Research priority follows evidence applicability, chassis evidence and gaps, testability and resource fit; novelty is recorded separately",
-  "条件或终点不同；规则模块弃权，不混排实验体系": "Conditions or endpoints differ; the rule-based module abstains rather than ranks different study systems together",
+  "研究优先级依据证据适用性、底盘证据与缺口、可检验性及资源匹配；新颖性另行记录": "Research priority follows evidence applicability, chassis evidence and gaps, testability and resource fit; novelty is recorded separately",
+  "条件或终点不同，规则模块将比较标记为不可比": "Different conditions or endpoints: the rule-based module marks the comparison as incomparable",
   "共享调用、时间与字节额度预留必要收尾；比较未执行": "Shared call, time and byte budgets reserve required closing steps; comparison was not run",
-  "缺少本比较的有效证据引用，不能宣称胜出": "Valid evidence references are missing for this comparison; a winner cannot be claimed",
-  "新版未继承旧版比较名次；仅在本轮复核后入选待人工审查": "The revised version enters follow-up research assessment after this run's review; comparison ranks are version-specific",
+  "本次比较的有效证据引用待补充，结果保持未决": "Valid evidence references are required for this comparison; the result remains unresolved",
+  "新版按本轮复核结果进入后续研究评估，比较名次按版本记录": "The revised version enters follow-up research assessment after this run’s review; comparison ranks are version-specific",
   "为本次口袋重新编码；分子embedding须与权重、预处理和ID映射一致。": "Encode this pocket anew; molecule embeddings must match weights, preprocessing and ID mapping.",
-  "为本次链重新生成Foldseek/SaProt特征；不能沿用其它靶点向量。": "Regenerate Foldseek/SaProt features for this chain; do not reuse vectors from another target.",
+  "为本次蛋白链生成匹配的 Foldseek/SaProt 特征与靶点向量。": "Generate matching Foldseek/SaProt features and target vectors for this protein chain.",
   "为本次序列重新生成蛋白图，并核对分子图与模型环境。": "Regenerate the protein graph for this sequence and check molecule graphs and model environment.",
-  "为本次口袋生成药效团；分子构象失败保持失败，不补造得分。": "Generate pharmacophores for this pocket. Conformer failures remain failures; scores are not fabricated.",
+  "为本次口袋生成药效团；构象状态与可用评分分别记录。": "Generate pharmacophores for this pocket; record conformer status and available scores separately.",
   "演示导入请求不符合格式或长度限制；未回显输入。": "The demo import request violates format or length limits; input is not echoed.",
   "准备好的蛋白与同坐标系参考配体，配体周围6 Å定义口袋。": "Prepared protein and same-frame reference ligand; the pocket is defined within 6 Å of the ligand.",
-  "明确选择的蛋白链，SaProt输入不超过1022残基；不自动截断。": "An explicitly selected protein chain. SaProt input must not exceed 1,022 residues; no automatic truncation.",
+  "输入为已解析的完整蛋白链；SaProt 接受长度不超过1022残基的序列。": "Input is a resolved, intact protein chain; SaProt accepts sequences up to 1,022 residues.",
   "与研究对象一致的一条蛋白序列，完整蛋白或明确选择的结构域。": "One protein sequence matching the study subject: the full protein or an explicitly selected domain.",
   "准备好的蛋白与同坐标系参考配体，用参考配体定位口袋。": "Prepared protein and same-frame reference ligand, using the reference ligand to locate the pocket.",
-  "输入状态不表示模型环境、权重或缓存已就绪，也不表示评分已运行。": "Input readiness, model environment, weights, caches and scoring status are recorded separately.",
-  "本检查未重新验证文件内容；修改过的文件须重新准备与审查。": "File contents are not revalidated by this check. Modified files require preparation and review again.",
-  "HDAC2演示缓存仅对应其固定构建体、链、序列、口袋和版本，不能只改靶点名复用。": "The HDAC2 demo cache applies only to its fixed construct, chain, sequence, pocket and version. Renaming the target does not make the cache reusable.",
+  "输入就绪、模型环境、权重、缓存与评分执行状态分别记录。": "Input readiness, model environment, weights, caches and scoring status are recorded separately.",
+  "本检查读取文件存在状态；文件内容变更后重新准备并审查。": "This check reads file-presence status; prepare and review files again after content changes.",
+  "HDAC2 缓存对应其构建体、链、序列、口袋和版本；新靶点使用匹配的新缓存。": "HDAC2 caches match their construct, chain, sequence, pocket and version; new targets use matching new caches.",
   "ADMET、ChassisGate、对接和MD保持独立阶段，未因本检查而执行。": "ADMET, ChassisGate, docking and MD remain separate stages and are not executed by this check.",
-  "文献路线的候选分子不必强制作用于这个靶点。": "Literature-route candidate molecules are not required to act on this target.",
+  "文献候选与靶点筛选分别保留各自的作用机制和靶点关系。": "Literature candidates and target screening retain their respective mechanisms and target relationships.",
   "多角色通过共享后端的分离上下文完成生成、反思与审查，后端配置随运行保存。": "Roles use separate contexts on the shared backend for generation, reflection and review; backend configuration is saved with the run.",
   "研究优先级依据证据适用性、可检验性和资源匹配进行比较。": "Research priorities compare evidence applicability, testability and resource fit.",
   "底盘快照汇总研究线索；正式分类、FBA 结果与 PKPD 参数来源分别记录。": "Chassis snapshots summarize research leads; formal classification, FBA results and PKPD parameter sources are recorded separately.",
@@ -196,32 +198,71 @@ const SYSTEM_UI_TEXT = Object.freeze({
   "查新报告列出实际检索窗口、相关工作、待确认差异和执行状态。": "Novelty reports list actual search windows, related work, differences to check and execution status.",
   "主张审查由共享后端的分离上下文执行，保存逐条主张与来源的审查记录。": "Claim review uses separate contexts on the shared backend and saves claim-to-source review records.",
   "本次检索结果及其范围随查新记录保存": "Search results and their scope are saved with the novelty record",
-  "工具观察记录查询范围、数据来源和返回内容。": "Tool observations record query scope, data sources and returned content.",
-  "底盘生产评价使用菌株和条件匹配的生产、机制及模型证据": "Chassis-production assessment uses strain-and-condition-matched production, mechanism and model evidence",
-  "研究优先级依据证据适用性、底盘证据与缺口、可检验性及资源匹配；新颖性另行记录": "Research priority follows evidence applicability, chassis evidence and gaps, testability and resource fit; novelty is recorded separately",
-  "新版按本轮复核结果进入后续研究评估，比较名次按版本记录": "The revised version enters follow-up research assessment after this run's review; comparison ranks are version-specific",
   "本合同列出研究优先级、证据依据及参数测量需求。": "This plan lists research priorities, evidence and parameter measurement needs.",
   "本轮未生成研究合同；已保存假说、预算和停止原因供继续研究使用。": "No research plan was generated this run; saved hypotheses, budgets and stop reasons support continuation.",
-  "本轮继续已保存的来源与草稿，重新执行审查和比较；来源保留原检索记录。": "This run continues saved sources and drafts, repeats reviews and comparisons, and retains the original retrieval records.",
-  "来源读取范围标记为摘要或全文": "Source reading scope is labelled as abstract or full text",
-  "查新结论关联查询范围和相关工作对照": "Novelty conclusions link to query scope and related-work comparisons",
-  "查新结论使用已记录的检索结果": "Novelty conclusions use recorded search results",
-  "数据库注释、因果证据与生产证据分别归档": "Database annotations, causal evidence and production evidence are recorded separately",
   "历史角色标签来源为原记录的明确文本线索；当前审查状态为待复核。": "Historical role labels derive from explicit text in the original record; current review status: pending.",
   "部分靶点的靶细胞信息待补充。": "Target-cell information remains to be added for some targets.",
   "部分干预线索的单一化学实体待解析；小分子筛选入口使用已解析的单一结构。": "Some intervention leads await single-entity resolution; small-molecule screening uses resolved individual structures.",
   "论文分组保留跨数据库和版本的原快照；独立研究按研究标识去重，证据强度按设计、条件与审查结果评价。": "Paper groups retain source snapshots across databases and versions; independent studies are deduplicated by identity and evidence strength follows study design, conditions and review.",
-  "候选名称的唯一化学身份关联待确定": "The candidate name awaits a unique chemical-identity link",
   "展示标签来源为历史候选说明与关联证据中的明确角色词；角色审查待完成": "Display labels use explicit role terms in historical candidate descriptions and linked evidence; role review is pending",
   "科研用途。导出内容包含当前研究与证据；分享前检查私人研究资料。": "For research use. Exports contain the current research and evidence; check private research information before sharing.",
   "科研用途：识别靶点、候选分子及关联证据": "For research use: identify targets, candidate molecules and linked evidence",
-  "检索疾病—靶点关联及其数据来源，关联分数按数据库定义记录。": "Retrieve disease-target associations and their sources; association scores follow the database definitions.",
   "列名映射示例；实际列名以导入 CSV 为准。": "Column mapping example; use the actual column names in the imported CSV.",
   "用于展示四模型评分流程的 50 分子界面示例。": "A 50-molecule interface example for the four-model scoring workflow."
+});
+// Historical software labels only: exact display aliases for saved records.
+// Keep these keys readable for compatibility; current producers use the table above.
+const LEGACY_SYSTEM_UI_TEXT = Object.freeze({
+  "已存版本与来源重新审查；没有本轮新检索": "Re-review saved versions and sources; acquisition: reused, with original retrieval records",
+  "模型禁用；只有检索观察，没有已判读假说": "Retrieval completed; model research awaits an enabled backend",
+  "无法确定终点则保留澄清问题；不擅自改疾病或菌株": "Retain the task disease and strain; record clarification questions for an unspecified endpoint",
+  "无原文则不生成有来源结论": "Source-supported conclusions use retrieved source text",
+  "摘要不是完整论文": "Source reading scope is labelled as abstract or full text",
+  "已审查证据、文献地图、用户给定候选": "Reviewed evidence, literature map and candidate inputs for assessment mode",
+  "仅机械去重，不由生成者做质量淘汰": "Generation applies rule-based deduplication; subsequent review evaluates candidate quality",
+  "用户给定候选不算自主发现": "Track candidate origin: assessment input or identification during the current research workflow",
+  "未检出不是原创证据": "Novelty conclusions link to query scope and related-work comparisons",
+  "无检索记录不得宣称有查新结论": "Novelty conclusions use recorded search results",
+  "数据库注释不证明因果或生产": "Database annotations, causal evidence and production evidence are recorded separately",
+  "最多1轮修订；新版不继承旧比较胜场": "At most one revision round; each version records its own review and comparison results",
+  "检索文献摘要和 DOI/PMID；不自动读取全文，不把摘要当作完整研究。": "Search abstracts and DOI/PMID identifiers; a separate tool retrieves full text and each source records its reading scope.",
+  "检索疾病—靶点关联；关联分数不是干预疗效或因果概率。": "Retrieve disease-target associations and their sources; association scores follow the database definitions.",
+  "核对唯一化学身份与 SMILES/InChIKey；不预测活性或生产能力。": "Check unique chemical identity and SMILES/InChIKey; activity and production capacity have their own assessments.",
+  "查已核对物种的 UniProt—通路归属；本地最多两页，不做富集或通路效应预测。": "Retrieve species-checked UniProt–pathway annotations, returning at most two pages.",
+  "独立上下文调用；只返回结构化研究产物，不公开私密思维链。": "Separate-context call returning structured research artifacts; private reasoning remains internal.",
+  "调用失败或超出预算；没有补造完成结果。": "The call failed or exceeded its budget; status and recovery information are saved.",
+  "固定协调器核对已保存实体身份；不由模型选择候选": "The coordinator checks the unique chemical identity of research candidates",
+  "使用有界只读工具；观察结果不是疗效判断。": "Tool observations record query scope, data sources and returned content.",
+  "条件不匹配：不进行 LLM 胜负判断": "Condition matching failed; comparison status: skipped",
+  "没有具体修订依据，不伪造版本变化": "Revision conditions were not met; retain the current version",
+  "预算预检不足；保留已审版本，不生成未复核修订": "Budget preflight failed; retain reviewed versions and mark revision as skipped",
+  "据批评修订，不继承旧胜场": "Revise from critique and record reviews and comparisons for each version",
+  "本轮复用已存来源和草稿，不把它们算作新检索或独立科学验证；审查和比较重新执行。": "This run continues saved sources and drafts, repeats reviews and comparisons, and retains the original retrieval records.",
+  "未执行，不显示虚构成果": "Not run",
+  "软件流程完成不等于候选有效；引文审查不等于独立实验或临床验证。": "Candidate conclusions include assessment status, evidence sources and applicable conditions.",
+  "指定名称尚未唯一关联本轮候选；未猜测身份或关联证据": "The candidate name awaits a unique chemical-identity link",
+  "核对指定候选的唯一化学身份并形成可追溯评估记录": "Check the assessment input’s unique chemical identity and create a traceable record",
+  "化学身份仍需核对；不能由名称推定化学形式或结构": "Chemical identity pending: a unique chemical form and structure record is required",
+  "没有已审查的支持证据，不能形成已支持的干预结论": "Intervention conclusion status: needs evidence; support is evaluated against reviewed evidence",
+  "菌株错配已纠正，不沿用其他菌株生产结论": "Strain mismatch corrected; production conclusions are reassessed for the task strain",
+  "宿主通路、GO或药理注释不是底盘生产证据": "Chassis-production assessment uses strain-and-condition-matched production, mechanism and model evidence",
+  "缺少 exact 菌株与条件匹配的生产依据，禁止直接外推": "Production applicability pending: exact strain-and-condition production evidence is required",
+  "证据适用性、底盘证据/缺口、可检验性与资源匹配；不把新意混成可信度概率": "Research priority follows evidence applicability, chassis evidence and gaps, testability and resource fit; novelty is recorded separately",
+  "条件或终点不同；规则模块弃权，不混排实验体系": "Different conditions or endpoints: the rule-based module marks the comparison as incomparable",
+  "缺少本比较的有效证据引用，不能宣称胜出": "Valid evidence references are required for this comparison; the result remains unresolved",
+  "新版未继承旧版比较名次；仅在本轮复核后入选待人工审查": "The revised version enters follow-up research assessment after this run’s review; comparison ranks are version-specific",
+  "为本次链重新生成Foldseek/SaProt特征；不能沿用其它靶点向量。": "Generate matching Foldseek/SaProt features and target vectors for this protein chain.",
+  "为本次口袋生成药效团；分子构象失败保持失败，不补造得分。": "Generate pharmacophores for this pocket; record conformer status and available scores separately.",
+  "明确选择的蛋白链，SaProt输入不超过1022残基；不自动截断。": "Input is a resolved, intact protein chain; SaProt accepts sequences up to 1,022 residues.",
+  "输入状态不表示模型环境、权重或缓存已就绪，也不表示评分已运行。": "Input readiness, model environment, weights, caches and scoring status are recorded separately.",
+  "本检查未重新验证文件内容；修改过的文件须重新准备与审查。": "This check reads file-presence status; prepare and review files again after content changes.",
+  "HDAC2演示缓存仅对应其固定构建体、链、序列、口袋和版本，不能只改靶点名复用。": "HDAC2 caches match their construct, chain, sequence, pocket and version; new targets use matching new caches.",
+  "文献路线的候选分子不必强制作用于这个靶点。": "Literature candidates and target screening retain their respective mechanisms and target relationships."
 });
 function systemText(value) {
   if (typeof value !== "string") return value;
   if (Object.hasOwn(SYSTEM_UI_TEXT, value)) return SYSTEM_UI_TEXT[value];
+  if (Object.hasOwn(LEGACY_SYSTEM_UI_TEXT, value)) return LEGACY_SYSTEM_UI_TEXT[value];
   let match;
   if ((match = /^查询 (europepmc_search|opentargets_search|disease_targets|uniprot|pubchem|chembl|reactome_pathways|quickgo_annotations)$/.exec(value))) return "Query " + match[1];
   if ((match = /^视角 ([12])$/.exec(value))) return "Perspective " + match[1];
@@ -229,7 +270,9 @@ function systemText(value) {
   if ((match = /^规则模块得到 (\d+) 组；保留全部版本与不同反证$/.exec(value))) return "Rule-based module produced " + match[1] + " groups; all versions and distinct counterevidence retained";
   if ((match = /^(\d+) 场实际比较；不足两个合格方案时不生成比赛$/.exec(value))) return match[1] + " comparisons recorded; no tournament is fabricated with fewer than two eligible options";
   if ((match = /^(\d+) 个有依据的新版，旧版仍保留$/.exec(value))) return match[1] + " evidence-guided new versions; earlier versions retained";
-  if ((match = /^(\d+) 份供人工评审的研究合同$/.exec(value))) return match[1] + " research plans for human review";
+  if ((match = /^(\d+) 份自动生成、供后续审阅的研究计划$/.exec(value))) return match[1] + " automatically generated research plans ready for review";
+  // Compatibility for saved pre-update event summaries.
+  if ((match = /^(\d+) 份供人工评审的研究合同$/.exec(value))) return match[1] + " automatically generated research plans ready for review";
   if ((match = /^(\d+) 个来源；摘要\/全文\/数据库范围分别保留$/.exec(value))) return match[1] + " sources; abstract/full-text/database scope retained separately";
   if ((match = /^(\d+) 个通过自动原文与语义审查的证据$/.exec(value))) return match[1] + " evidence records passed automated span and semantic checks";
   if ((match = /^疾病：([\s\S]*)；已保存输入引用 (\d+) 项$/.exec(value))) return "Disease: " + match[1] + "; " + match[2] + " saved input references";
@@ -308,7 +351,7 @@ function callout(content, style = "") {
   const node = el("div", "callout " + style); node.append(el("span", "", "ⓘ"), el("p", "", content));
   return node;
 }
-function notifications(items, title = "Uncertainty / validation gaps") {
+function notifications(items, title = "Open questions & validation status") {
   if (!list(items).length) return null;
   const node = el("div", "uncertainties"), ul = el("ul");
   node.append(el("strong", "", title)); for (const item of items) ul.append(el("li", "", item));
@@ -580,7 +623,7 @@ function assessmentDetails(assessment) {
   const root = el("section", "dialog-section");
   if (!assessment) return root;
   assessment = publicCandidateAssessment(assessment);
-  root.append(el("h3", "", assessment.origin === "user_supplied" ? "User-specified candidate assessment" : "Current candidate assessment"),
+  root.append(el("h3", "", assessment.origin === "user_supplied" ? "Input-candidate assessment" : "Current candidate assessment"),
     facts([["Requested population / endpoint", text(systemText(assessment.population_requested)) + " / " + text(systemText(assessment.endpoint_requested))],
       ["Delivery context", systemText(assessment.delivery_context)], ["Independent conclusion review", label(assessment.assessment_status || "unreviewed")],
       ["Scientific assessment", label(assessment.scientific_status)], ["Overall workflow", label(assessment.workflow_status)],
@@ -924,7 +967,7 @@ function openResearchReceipt(ref, item) {
     root.append(facts(Object.entries(flow.stage_limits || {}).map(([stage, limit]) => [stage, text(flow.stage_usage?.[stage] || 0) + " / " + text(limit)])));
     for (const [field, key, label] of [["publications","paper_id","Canonical publications & original snapshots"], ["claims","claim_id","Claim-level applicability"], ["queries","query_id","Actual queries & stop states"], ["novelty","novelty_id","Scoped novelty searches"], ["revisions","revision_id","Revision evidence"]])
       root.append(artifactLinks(list(flow[field]).map(row => row[key]), label));
-    add(root, notifications(flow.limitations, "Scope & limitations"));
+    add(root, notifications(flow.limitations, "Methods & scope"));
   } else {
     if (item.query_id) root.append(facts([["Actual query", item.query], ["Status / stop reason", text(item.status) + " / " + text(item.stop_reason)],
       ["Date window", (item.date_from || "Foundational work not date-limited") + " → " + (item.date_to || "Not restricted")], ["Read scope", item.scope],
@@ -1281,7 +1324,7 @@ function renderCollaboration() {
     ["Research species", anchor.species], ["Specified chassis", anchor.chassis_name], ["Conditions", systemText(anchor.condition)], ["Success criterion", systemText(anchor.success_criterion)]]));
   add(anchorPanel, notifications(list(anchor.constraints).map(systemText), "Constraints & resources")); add(anchorPanel, notifications(list(anchor.non_goals).map(systemText), "Explicit non-goals"));
   const budget = publicBudget(co.budget), panel = el("details", "panel budget-summary"); panel.dataset.uiKey = "budget";
-  panel.append(el("summary", "", "Budget & limitations · model requests reserved " + text(budget.llm_calls) + " / HTTP " + text(budget.http_attempts) + " / tools " + text(budget.tool_calls)),
+  panel.append(el("summary", "", "Budget & run status · model requests reserved " + text(budget.llm_calls) + " / HTTP " + text(budget.http_attempts) + " / tools " + text(budget.tool_calls)),
     facts([["Model requests reserved", budget.llm_calls], ["Actual model calls", budget.actual_llm_calls ?? "Not distinguished in legacy records"], ["HTTP request attempts", budget.http_attempts], ["Cache hits", budget.cache_hits], ["Conservative input reservation (UTF-8 bytes)", budget.input_bytes_reserved ?? budget.input_tokens_reserved], ["Conservative output reservation (UTF-8 bytes)", budget.output_bytes_reserved ?? budget.output_tokens_reserved]]),
     el("p", "confirmation-note", "Input/output quotas reserve UTF-8 bytes; provider token usage and billing are separate measures. Failures, pagination and retries consume HTTP budget."));
   if (budget.output_bytes_received != null) panel.append(facts([["Structured-result bytes (UTF-8, including budget-discarded results)", budget.output_bytes_received]]));
@@ -1289,7 +1332,7 @@ function renderCollaboration() {
   const failures = publicFailureRecords(co);
   for (const failure of failures) panel.append(detail(failureDetailTitle(failure), failure));
   if (failures.length) panel.append(el("p", "confirmation-note", "Input/output are recorded in UTF-8 bytes. Action IDs link the same stop or skip; legacy records with missing IDs retain an unlinked status."));
-  add(panel, notifications(list(co.limitations).map(summary => displayActionSummary({summary})), "Limitations of this run"));
+  add(panel, notifications(list(co.limitations).map(summary => displayActionSummary({summary})), "Run scope & pending work"));
   const supporting = el("div", "collaboration-supporting"); supporting.append(anchorPanel, panel); root.append(supporting);
   if (co.research_flow) {
     const researchPanel = el("details", "panel"); researchPanel.dataset.uiKey = "research-flow";
@@ -1394,7 +1437,7 @@ function openToolRecord(record) {
     detail("Saved scientific records & sources", {records:record.records, sources:record.sources}));
   const plan = list(coData()?.tool_plans).find(p => p.plan_id === record.plan_id);
   if (plan) root.append(button("View evidence-gathering plan →", () => openToolPlan(plan), "text-button"));
-  add(root, notifications(list(record.warnings).map(systemText), "Call limitations")); showDialog("TOOL · " + text(record.tool_name));
+  add(root, notifications(list(record.warnings).map(systemText), "Call scope")); showDialog("TOOL · " + text(record.tool_name));
 }
 function openToolPlan(plan) {
   const root = $("dialogContent"); root.replaceChildren(el("h2", "", "Saved tool plan · " + text(plan.plan_id)), status(plan.status),
@@ -1489,7 +1532,7 @@ function hypothesisCard(hypothesis, co) {
   if (list(hypothesis.changes).length) {
     const node = el("section", "version-changes"); node.append(el("h3", "", "Evolution · version changes"));
     const items = el("ul"); for (const change of hypothesis.changes) items.append(el("li", "", change)); node.append(items,
-      el("p", "confirmation-note", "New versions do not inherit earlier comparison wins. Revised versions require fresh review.")); body.append(node);
+      el("p", "confirmation-note", "Each version records its own review and comparison results.")); body.append(node);
   }
   const priorVersions = list(co.hypotheses).filter(item => item.hypothesis_id === hypothesis.hypothesis_id);
   if (priorVersions.length > 1) body.append(button("View all versions of this hypothesis (" + priorVersions.length + ")", () => {
@@ -1600,7 +1643,7 @@ function renderToolCalls() {
     const card = el("article", "panel tool-result"), top = el("div", "entity-top"); top.append(el("h3", "", record.tool_name || "Recorded tool call"), status(record.status));
     card.append(top, facts([["Provider", record.provider], ["Retrieved at", localDate(record.retrieved_at)],
       ["HTTP attempts", record.request_count ?? 0], ["Cache hits", record.cache_hits ?? 0], ["Returned records", list(record.records).length]]));
-    add(card, notifications(list(record.warnings).map(systemText), "Call limitations & warnings"));
+    add(card, notifications(list(record.warnings).map(systemText), "Call status & scope"));
     for (const source of list(record.sources)) {
       if (typeof source === "string") {if (/^https?:\/\//i.test(source)) card.append(safeLink(source, source)); else card.append(el("p", "entity-id", source));}
       else if (source && typeof source === "object") card.append(safeLink(source.title || source.source_id || source.url || "Tool source", source.url || ""));
@@ -1737,7 +1780,7 @@ function openEvidence(id) {
     facts([["Source location", record.location], ["Study system", record.study_system], ["Study conditions", record.condition],
       ["Measured endpoint", record.endpoint], ["Span verification", record.validated_span ? "Span found in retrieved source" : "Unconfirmed"],
       ["Evidence scope", sourceScopeLabel(source)]]));
-  if (record.limitations?.length) {const ul = el("ul"); for (const value of record.limitations) ul.append(el("li", "", value)); root.append(dialogSection("Limitations & applicability", ul));}
+  if (record.limitations?.length) {const ul = el("ul"); for (const value of record.limitations) ul.append(el("li", "", value)); root.append(dialogSection("Evidence scope & applicability", ul));}
   if (source) {const sourceNode = el("div"); sourceNode.append(safeLink(source.title, source.url), el("p", "muted", source.provider + " · " + source.source_id), button("View retrieved source text", () => openSource(source.source_id))); root.append(dialogSection("Source", sourceNode));}
   root.append(callout("Automated review checks alignment between source text and conclusions. Evidence details retain the study system, conditions and endpoint.", "amber"));
   showDialog("EVIDENCE · " + id);

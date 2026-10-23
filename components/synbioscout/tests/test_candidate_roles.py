@@ -62,7 +62,7 @@ def test_context_roles_never_become_therapeutic_priority_from_positive_gate(role
     c = candidate(role=role, role_status="model_reviewed", role_evidence_ids=["fixture:ev"])
     decide_candidates([c], [record("Synthetic observation supports the recorded contextual association.")])
     assert c.decision == "hold"
-    assert "not a therapeutic shortlist" in c.decision_reasons[0]
+    assert "belongs to the context-molecule view" in c.decision_reasons[0]
 
 
 @pytest.mark.parametrize("role", ["therapeutic_candidate", "symptom_management"])

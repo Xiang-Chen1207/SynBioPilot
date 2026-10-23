@@ -1,6 +1,7 @@
 """Explicit, file-based integration with the real Target2Lead compute pipeline.
 
-Writing a handoff does not run inference, submit jobs or imply biological efficacy.
+This module writes configurations for dedicated inference and job-execution entry
+points. Biological evaluation retains its own evidence and status.
 """
 from __future__ import annotations
 

@@ -14,7 +14,7 @@
 
 Candidate inputs start empty. The intake prompt preserves user-supplied candidate names; disease exploration identifies candidates through current research sources. Candidate-assessment admission requires a user-supplied candidate list; it does not restrict which name is accepted. Disease exploration rejects candidate-specific background inputs and starts with its own searches.
 
-New offline tests cover confirmed API submission for caffeine, resveratrol, NAC and SFN; disease-only input; explicit candidate exclusions; blank UI fields; and first-start configuration. These tests check software contracts with fixed parser responses, not live-model biomedical accuracy.
+New offline tests cover confirmed API submission for caffeine, resveratrol, NAC and SFN; disease-only input; explicit candidate exclusions; blank UI fields; and first-start configuration. These tests evaluate software contracts using fixed parser responses; live-model biomedical evaluation uses its own datasets.
 
 NAC/SFN mentions remain where they carry information: historical validation records, regression fixtures and instructions preventing implicit candidate selection. Legacy raw-schema defaults remain compatible; the interactive intake and the packaged example explicitly set unspecified strain and candidate fields to empty values.
 

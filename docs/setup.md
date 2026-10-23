@@ -80,8 +80,8 @@ python3 -m venv .venv
 Open `http://127.0.0.1:8765`. Configure its normal backend authentication and
 explicitly enable remote processing before live research. This application has
 its own settings and budgets; the screening Gate API settings do not configure it.
-Use candidate assessment for supplied candidates; use disease exploration for
-unseeded discovery. Source packages are explicit, and the optional NAC source
+Disease exploration identifies candidates from the disease question. The optional
+candidate-assessment mode evaluates existing inputs with their recorded origin. Source packages are explicit, and the optional NAC source
 package and real research histories are not included in this code distribution.
 
 Review/export the research result, prepare the selected target files and use the

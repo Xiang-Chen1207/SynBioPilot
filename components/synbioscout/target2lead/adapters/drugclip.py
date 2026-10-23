@@ -90,6 +90,7 @@ def run(cfg, output):
         if not chunks:
             raise ValueError('No DrugCLIP embedding shards matched their mapping files')
     else:
+        # Process the complete library in batches; chunk_size is a per-batch count.
         size = int(settings.get('chunk_size', 10000))
         dictionaries = Path(settings['repo'])/'dict/dict_mol.txt'
         vocabulary = [line.split()[0] for line in dictionaries.read_text().splitlines() if line.strip()]

@@ -41,7 +41,7 @@ def setup_engine(tmp_path, monkeypatch, *, remaining=840, max_input=300000):
     brief = ResearchBrief(disease="虚构疾病", research_mode="co_scientist",
         population="指定实验人群，年龄与条件仍需验证", delivery_context="鼻腔递送暴露和稳定性未知",
         phenotype="核心与伴随终点分别分析。" * 40,
-        research_goal="仅评估指定候选，不是盲发现。" * 35, existing_candidates=["SYNTHETIC compound"],
+        research_goal="按原来源与条件评估候选分子。" * 35, existing_candidates=["SYNTHETIC compound"],
         chassis_name="SYNTHETIC L168", budget=ResearchBudget(max_llm_calls=16,
             max_input_tokens=max_input, timeout_seconds=840, max_targets=0))
     run = store.create_run(pid, brief)

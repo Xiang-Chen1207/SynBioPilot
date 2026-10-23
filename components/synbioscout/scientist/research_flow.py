@@ -364,7 +364,7 @@ class ResearchFlow:
                 "status": "verified_background_reuse_requires_review", "records": len(added),
                 "observed_records": len(package.sources), "version": package.receipt["version"],
                 "manifest_sha256": package.receipt["manifest_sha256"]})
-            q = self.new_query("reuse", "background_package", "显式启用的已核对来源包；没有本轮网络查证", provider="library")
+            q = self.new_query("reuse", "background_package", "复用已启用的核对来源包，获取时间沿用原记录", provider="library")
             q.status, q.source_ids, q.reused_from = "reused", added, package.receipt["package_id"]
             q.stop_reason = "background_not_new_verification"
         for name in ("papers", "literature"):
@@ -406,7 +406,7 @@ class ResearchFlow:
                 added = self.engine.append_sources(reused)
                 self.ingest(reused, "saved")
                 count += len(added)
-                q = self.new_query("reuse", "saved_sources", "已存公开来源复用；没有新的检索", provider="saved")
+                q = self.new_query("reuse", "saved_sources", "复用已存公开来源，获取时间沿用原检索记录", provider="saved")
                 q.status, q.source_ids, q.reused_from = "reused", [s.source_id for s in reused], previous.run_id
                 q.stop_reason = "saved_not_new_verification"
         self.data.library_status.append({"library": "current_project_public_sources", "status": "bounded_reuse", "records": count})
@@ -1030,7 +1030,7 @@ class ResearchFlow:
             hypothesis_id=new.hypothesis_id, version=new.version, query_ids=[q.query_id],
             closest_source_ids=q.source_ids, status="insufficient_search",
             unconfirmed_difference=new.novelty.difference,
-            limitations=["前版来源是复用线索；修订版没有新的近期检索", "必须重新逐主张审查"] ))
+            limitations=["修订版复用前版来源，近期检索状态沿用原记录", "必须重新逐主张审查"] ))
         self.update_novelty()
 
     def integrity_errors(self):

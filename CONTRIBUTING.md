@@ -6,7 +6,7 @@ scoring, source scope, target identity or chassis assumptions.
 
 For a controller change, run the offline example described in the README with a
 fresh output directory. Scientific result claims require their actual model and
-experimental evidence; a passing synthetic example is not that evidence.
+experimental evidence. Synthetic examples evaluate software behavior separately.
 
 Do not commit credentials, private histories, virtual environments, checkpoints,
 third-party database exports or trajectories. Report issues with the command,

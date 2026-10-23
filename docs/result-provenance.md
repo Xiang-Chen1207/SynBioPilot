@@ -39,8 +39,8 @@ provides the implementation and input/output contracts.
 ## Software examples and execution records
 
 The [synthetic example](../examples/synthetic/README.md) uses labelled artificial
-inputs for software checks. SynBioScout also offers supplied-candidate assessment
-and continuation modes, with explicit task-intent and origin fields per run.
+inputs for software checks. SynBioScout also offers an optional candidate-assessment input mode
+and continuation, with task-intent and origin fields per run.
 Those modes and the [component execution records](../components/synbioscout/docs/VALIDATION.md)
 have their own inputs and stage statuses. The project result summary above
 describes the formal autonomous discovery and automatic screening workflow.

@@ -3,8 +3,8 @@
 This module emits a transparent, pre-calibration deliverability probability for a
 single molecule--chassis pair. Probability calibration is fold-local by design
 (see the paper, "Fold-Local Calibration"): the calibration map is fitted on the
-training molecules of each leave-one-molecule-out (LOMO) fold and cannot be
-fitted inside a single per-pair call. It is therefore applied downstream at the
+training molecules of each leave-one-molecule-out (LOMO) fold. The per-pair
+call produces raw scores; calibration is applied downstream at the
 scoring stage by ``deliverability.calibrate`` /
 ``scripts/score_calibration.py``, which consumes the ``p_raw`` produced here.
 Channel priors and selection thresholds are the frozen defaults documented in

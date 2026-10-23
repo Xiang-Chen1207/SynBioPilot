@@ -21,7 +21,7 @@ documents its inputs, configuration and outputs.
 | AI Scientist / SynBioScout | Autonomous disease-driven discovery of candidates and targets | Evidence-linked candidates, targets and research plans |
 | Target-Guided Virtual Screening | Independent Top1000 selection, candidate union, percentile scoring and ADMET8 integration | Composite-ranked candidates |
 | ChassisGate | Literature, KEGG/GEM and growth-constrained FBA evidence integrated through a biological rubric | Chassis-specific route classes and follow-up lists |
-| Molecular Docking & Dynamics Analysis | Target-specific docking and analysis of selected trajectories | Pose, interaction and trajectory metrics |
+| Molecular Docking & Dynamics Analysis | Target-specific docking and analysis of the configured SAHA/SFN trajectories | Pose, interaction and trajectory metrics |
 
 Use the root `run.py` entry point for the Top1000/ADMET8 screening workflow.
 Launch SynBioScout and molecular-analysis scripts through their module guides.
@@ -35,8 +35,9 @@ ChassisGate automatically classifies both SFN and NAC as **D1**. See
 [project workflow and records](docs/result-provenance.md) for the project result
 summary and the corresponding input/output records.
 
-The application also supports assessment of supplied candidates as a separate
-task mode. Each run retains its own task intent and candidate-origin records.
+For other research tasks, the application includes an optional candidate-assessment
+mode. Each run records its task intent and candidate origins; the project workflow
+above uses autonomous discovery and automatic screening.
 
 ## Quick start: offline example
 

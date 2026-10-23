@@ -197,6 +197,18 @@ function textOf(element) {return [element.textContent, ...element.children.map(t
     assert.match(textOf(env.elements.demoConnection), /Cannot connect/); assert.equal(env.elements.demoBenchmark.children.length, 0);
     await env.root.Hdac2Demo.load(); assert.equal(env.calls.length, 1);
   });
+  await check("legacy source labels and current labels render the same scoped example", async () => {
+    const oldCatalog = copy(catalog), newCatalog = copy(catalog);
+    oldCatalog.scenarios[0].selection_note = "人工挑选的 50 分子演示集，不代表随机采样的科学基准。";
+    newCatalog.scenarios[0].selection_note = "用于展示四模型评分流程的 50 分子界面示例。";
+    const older = environment("http:", () => response(oldCatalog));
+    const current = environment("http:", () => response(newCatalog));
+    await older.root.Hdac2Demo.load(); await current.root.Hdac2Demo.load();
+    const rendered = env => env.elements.demoScenarioNote.textContent;
+    assert.equal(rendered(older), rendered(current));
+    assert.match(rendered(current), /50-molecule interface example/);
+    assert.equal(oldCatalog.scenarios[0].selection_note, "人工挑选的 50 分子演示集，不代表随机采样的科学基准。");
+  });
   process.stdout.write(checks + " HDAC2 demo UI contracts passed\n");
 })().catch(error => {process.stderr.write(error.stack + "\n"); process.exitCode = 1;});
 
