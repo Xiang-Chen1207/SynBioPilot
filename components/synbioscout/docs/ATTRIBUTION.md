@@ -17,9 +17,9 @@ Dependencies are not bundled or relicensed in this snapshot. Their upstream dist
 
 ## Excluded research inputs
 
-The historical `nac_asd_v1` package and `final_gold_source_scenario.json` contain real paper excerpts and project input, not wholly synthetic data. They are omitted pending a source-by-source redistribution review. The release's growth/concentration examples and portable test fixtures are explicitly synthetic.
+The historical `nac_asd_v1` package and `final_gold_source_scenario.json` contain real paper excerpts and project input. They are omitted pending a source-by-source redistribution review. The release's growth/concentration examples and portable test fixtures are explicitly synthetic.
 
-The original tests that require omitted historical documents remain as test source for engineering provenance, but are outside the portable test selection. No real run, inference directory, local credential or patient record is distributed.
+The original tests that require omitted historical documents remain as test source for engineering provenance, but are outside the portable test selection. The distributed files comprise software, public examples and test source; research runs and local private assets remain external.
 
 ## License
 

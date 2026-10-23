@@ -120,7 +120,7 @@ def load_config(path):
 
 
 def input_fingerprints(cfg):
-    """Hash scientific inputs, so a resumed merged run cannot reuse changed data."""
+    """Hash scientific inputs to validate data consistency when resuming a merged run."""
     paths = {f'target.{key}': cfg['target'][key] for key in
              ('protein_pdb', 'sequence_fasta', 'reference_ligand_sdf')}
     paths['library.molecules'] = cfg['library']['molecules']

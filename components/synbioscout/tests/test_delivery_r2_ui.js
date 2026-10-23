@@ -24,7 +24,7 @@ const evaluation={schema_version:1,assessment_id:"a_synthetic",version:1,candida
 const record={...evaluation,recorded_status:"completed_review",final:evaluation,reviews:[{...evaluation,verdict:"accept",reason:"SYNTHETIC scope reviewed",item_reviews:[{finding_id:"f_synthetic",verdict:"accept",evidence_ids:["e_synthetic_mixed"],reason:"SYNTHETIC exact scope"}]}]};
 const assessment={candidate_id:"c_synthetic",entity_id:"m_synthetic",identity_revision:2,name:"SYNTHETIC compound",origin:"user_supplied",
   scientific_status:"needs_evidence",decision:"hold",assessment_status:"completed_review",validated_evaluation:evaluation};
-check("independent completion does not require or invent hypotheses",()=>{
+check("independent completion retains the actual hypothesis count",()=>{
   const run={candidate_evaluations:[evaluation],candidate_evaluation_records:[record],co_scientist:{hypotheses:[],reviews:[],contracts:[]}};
   assert.equal(ui.artifactTarget("assessment:a_synthetic:v1",run).kind,"candidate_evaluation");
   assert.equal(ui.artifactTarget("assessment_review:ar_synthetic",run).kind,"candidate_evaluation_review");
@@ -32,7 +32,7 @@ check("independent completion does not require or invent hypotheses",()=>{
   assert.equal(ui.artifactTarget("assessment_review:missing",run),null);
   assert.equal(ui.publicCandidateAssessment(assessment).scientific_status,"needs_evidence");
 });
-check("unreviewed and stale identity records do not gain a final conclusion",()=>{
+check("final conclusions require reviewed records with current identity",()=>{
   assert.equal(ui.publicCandidateEvaluation({...evaluation,status:"ready_for_review"}),null);
   const row=ui.publicCandidateEvaluationRecord({...record,version:2});
   assert.equal(row.final,null); assert.equal(row.status,"unreviewed");
@@ -58,7 +58,8 @@ check("candidate renderer labels independent review separately from scientific u
   const displayed=ui.assessmentDetails(assessment).textContent;
   assert.match(displayed,/Independent assessment reviewed/);assert.match(displayed,/Needs evidence/);
   assert.match(displayed,/SYNTHETIC limited assessment/);assert.match(displayed,/SYNTHETIC adjunct/);
-  assert.match(displayed,/Unperformed hypothesis expansion/);
+  assert.match(displayed,/Hypothesis expansion Not recorded/);
+  assert.match(displayed,/Optional stages retain their execution status/);
   const old=ui.assessmentDetails({...assessment,validated_evaluation:null}).textContent;
   assert.match(old,/Independent conclusion unreviewed/);assert.doesNotMatch(old,/SYNTHETIC limited assessment/);
 });

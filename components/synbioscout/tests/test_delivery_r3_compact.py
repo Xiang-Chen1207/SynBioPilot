@@ -156,7 +156,7 @@ def test_local_expansion_growth_is_separate_from_received_and_accepted_output_by
 
     compact, _ = synthetic_17188_pair()
     ledger = RunLedger(ResearchBudget(), 10**12)
-    # A provider returned the compact JSON. Local expansion is not a second
+    # A provider returned the compact JSON. Local expansion reuses the original
     # provider output; the next real request must account for its expanded data.
     ledger.output(json.dumps(compact, ensure_ascii=False), call_allowance=12000)
     before = ledger.snapshot()
@@ -287,7 +287,7 @@ def test_reference_expansion_cannot_waive_existing_entity_and_scope_gates(tmp_pa
 
 
 def test_oversized_actual_followup_is_partial_after_admitted_compact_output(tmp_path, monkeypatch):
-    """Budget boundary fixture, not a claim that the normal six-source input grows this large."""
+    """Synthetic oversized-input fixture for the budget boundary."""
     from test_budget_scheduling import setup_engine
 
     from scientist.coscientist import CoScientistEngine

@@ -121,9 +121,9 @@ def test_missing_disease_and_multiturn_reply_preserve_candidate(setup):
     assert s.parser.calls[-1]["transcript"]==["评估NAC","自闭症"]
 
 
-def test_short_reply_preserves_manual_edits_over_older_extracted_text(setup):
+def test_short_reply_preserves_settings_edits_over_older_extracted_text(setup):
     s=setup;first,_=parse(s)
-    edited=copy.deepcopy(first["brief"]);edited["phenotype"]="用户手动限定的易激惹终点"
+    edited=copy.deepcopy(first["brief"]);edited["phenotype"]="编辑后的易激惹终点"
     response=s.client.patch("/api/intake/drafts/"+first["draft_id"],json={"revision":1,"brief":edited})
     assert response.status_code==200
     s.parser.result["population"]={"text":"成年人","quote":"只关注成年人"}
@@ -216,7 +216,7 @@ def test_output_limit_invalid_json_and_provider_timeout(setup):
     assert not s.calls
 
 
-def test_no_model_has_honest_manual_fallback_and_zero_call_receipt(tmp_path):
+def test_settings_entry_preserves_zero_call_receipt_when_model_is_unavailable(tmp_path):
     service=IntakeService(ScientistSettings(llm=LLMSettings(backend="none")),ProjectStore(tmp_path))
     result=service.parse(IntakeRequest(request_id=uuid.uuid4().hex,text=TEXT))
     assert result["status"]=="failed" and result["receipt"]["model_calls"]==0
@@ -260,7 +260,7 @@ def test_concurrent_duplicate_parse_runs_once(tmp_path):
 
 
 def test_edit_uses_existing_brief_validation_preserves_raw_and_rejects_stale(setup):
-    s=setup;draft,_=parse(s);value=copy.deepcopy(draft["brief"]);value["population"]="明确手动提供的人群"
+    s=setup;draft,_=parse(s);value=copy.deepcopy(draft["brief"]);value["population"]="编辑后的人群"
     first=s.client.patch("/api/intake/drafts/"+draft["draft_id"],json={"revision":1,"brief":value})
     assert first.status_code==200 and first.json()["messages"]==[TEXT]
     assert first.json()["provenance"]["population"]["kind"]=="user_edited"

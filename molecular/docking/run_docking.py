@@ -1,7 +1,7 @@
 """Common-protocol HDAC2 inhibitor docking with the existing AD4Zn receptor.
 
 Nine neutral parent compounds, three search seeds each. Panobinostat +1 is
-an explicitly separate protonation sensitivity model, not a tenth drug.
+a separate protonation sensitivity model of the same drug.
 Rigid receptor; scores are not experimental binding free energies.
 """
 from pathlib import Path

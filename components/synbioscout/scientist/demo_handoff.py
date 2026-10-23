@@ -70,7 +70,7 @@ def target_screening_checklist(package: TargetPackage, project_root: Path) -> di
             "输入就绪、模型环境、权重、缓存与评分执行状态分别记录。",
             "本检查读取文件存在状态；文件内容变更后重新准备并审查。",
             "HDAC2 缓存对应其构建体、链、序列、口袋和版本；新靶点使用匹配的新缓存。",
-            "ADMET、ChassisGate、对接和MD保持独立阶段，未因本检查而执行。",
+            "ADMET、ChassisGate、对接和 MD 由各自执行入口运行，阶段状态分别记录。",
             "文献候选与靶点筛选分别保留各自的作用机制和靶点关系。",
         ],
     }

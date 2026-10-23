@@ -77,7 +77,7 @@ def test_receipt_reuse_unknown_execution_and_failed_http_do_not_become_fresh_suc
         QueryReceipt(query_id="q_failure", stage="landscape", purpose="SYNTHETIC", query="failed", status="unavailable", request_count=1)]
     counts = research_observation_counts(run)
     assert counts["reused_query_count"] == counts["unknown_execution_query_count"] == 1
-    assert counts["executed_literature_query_count"] == 1  # an attempt, not an accepted result
+    assert counts["executed_literature_query_count"] == 1  # query-attempt count; accepted results are counted separately
     assert counts["unexecuted_query_count"] == 0
 
 

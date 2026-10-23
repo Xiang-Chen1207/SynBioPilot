@@ -41,7 +41,7 @@ def _project(value, model):
             continue
         item = value[key]
         if key == "claim_relation":
-            # A legacy null relation is absence, not an approved v2 relation.
+            # A legacy null relation retains its absent-relation status during v2 projection.
             result[key] = _project(item, models.ClaimEvidenceRelation) if isinstance(item, dict) else None
         elif key in NESTED:
             result[key] = [_project(v, NESTED[key]) for v in item[:300]] if isinstance(item, list) else []

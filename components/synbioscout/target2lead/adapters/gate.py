@@ -72,7 +72,7 @@ def run(cfg, output):
             name, source = resolve_name(row, output/'cache/names')
             result['resolved_name'], result['name_source'] = name, source
             pid = row['compound_id']+'__'+chassis.id
-            # A missing name is not a negative literature search result.
+            # A missing name retains input-incomplete status; literature search has its own result.
             no_name = LiteratureAssessment(pair_id=pid, status='retrieval_error', retrieved_count=0,
                 grounded_runs=0, p_raw=None, decision='abstain', semantic_source='',
                 precursor_available='', evidence_pmids='') if not name else None

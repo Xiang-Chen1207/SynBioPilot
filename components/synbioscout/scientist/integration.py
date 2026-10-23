@@ -65,7 +65,7 @@ def _map_prepared_systems(cfg: dict[str, Any], candidates: list[CandidateRecord]
         mapping[identifier] = canonical
 
     # Prepared systems are unusual and must have an exact chemical identity mapping.
-    # The normal handoff does not load a potentially large molecular library.
+    # The handoff writes configuration; the scoring stage loads the molecular library.
     needed_ids = set(systems) | {identifier for candidate in candidates
                                 for identifier in [candidate.candidate_id, *candidate.original_ids]}
     frame = library_frame(cfg)

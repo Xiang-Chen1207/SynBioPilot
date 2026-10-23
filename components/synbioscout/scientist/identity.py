@@ -1,6 +1,6 @@
 """Apply verified chemical observations to explicitly linked, current-run entities.
 
-This module has no file/network access. Chemical identity annotations cannot change
+This pure module updates chemical identity annotations while preserving
 scientific roles, priority, accepted evidence, Gate or versioned hypothesis claims.
 """
 from __future__ import annotations
@@ -188,7 +188,7 @@ class CandidateIdentitySync:
         changed = candidate.identity_status != "resolved" or any(getattr(candidate, k) != v for k, v in values.items())
         if changed:
             if plan.get("origin") != "supervisor_identity":
-                # Resolving a late identity cannot reclassify scientific priority
+                # Resolving a late identity preserves the scientific-priority classification
                 # when finalize/UI recompute decisions using the same evidence.
                 if not candidate.identity_assessment_pending:
                     candidate.identity_priority_before_update = (
@@ -229,7 +229,7 @@ class CandidateIdentitySync:
         if not self._writable():
             return {"status": "read_only", "reason": "Completed research entities remain immutable"}
         # Reuse the supervisor observation's call reference, then verify its
-        # returned fields through the same path. The adapter is not another call.
+        # returned fields through the same path. The adapter uses the existing call receipt.
         call_id = next((o["call_id"] for o in candidate.identity_history if
                         o.get("application_status") in {"applied", "unchanged"} and
                         _exact(o.get("query", "")) == _exact(candidate.name) and

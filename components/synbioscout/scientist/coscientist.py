@@ -261,7 +261,7 @@ class CoScientistEngine:
         item = PlanStep(step_id="co_" + key, question=title, capability=role, status="running")
         self.run.steps.append(item)
         # These references describe available inputs at the phase boundary, not
-        # model prompts. They do not affect execution or scientific decisions.
+        # model prompts. Execution and scientific decisions use their own fields.
         inputs = self.observation_artifacts(key, inputs=True)
         self.observation_before[item.step_id] = set(self.observation_artifacts(key))
         self.event(role, "phase", "running", title,
@@ -473,7 +473,7 @@ class CoScientistEngine:
                 "reason": "budget_preflight" if isinstance(exc, BudgetExceeded) else "optional_provider_failure",
                 "prior_timeout": self.prior_timeout})
             self.event(role, "optional_skip", "skipped", title,
-                       "可选调用没有可用结果；保留已审版本，继续尝试必要收尾。")
+                       "可选调用结果为空；保留已审版本并继续必要收尾。")
             return None
 
     def context(self, hypotheses=(), *, generation=False, closing=False):
@@ -528,7 +528,7 @@ class CoScientistEngine:
             "accepted_evidence": [e.model_dump() for e in evidence],
             "global_accepted_evidence_index": accepted_evidence_index(globally_accepted,
                 linked_evidence_ids=refs, claim_applicability=associations),
-            "evidence_state_semantics": "Global span acceptance, exact-version linkage and claim applicability are separate. Not linked does not mean unaccepted. A globally accepted animal finding is not human intervention support.",
+            "evidence_state_semantics": "Global span acceptance, exact-version linkage and claim applicability are separate. Unlinked evidence retains its global acceptance status. Accepted animal findings retain animal-study scope; human intervention support requires matching evidence.",
             "reviewed_evidence_associations": associations,
             "sources": [{**source_context(s, globally_accepted, 4500, include_prefix=True), "review_status":
                          "has_accepted_citations" if any(e.source_id == s.source_id for e in globally_accepted) else "unreviewed_source",
@@ -690,7 +690,7 @@ class CoScientistEngine:
 
         Future model content and latency are not known. The plan is recomputed
         at every necessary boundary; large actual outputs/late calls fail closed.
-        It does not manufacture hypotheses, reviews or a Meta contract.
+        Hypotheses, reviews and Meta contracts are produced by their respective research stages.
         """
         cards = latest_cards(self.state)
         allowance = self.output_allowance()
@@ -908,7 +908,7 @@ class CoScientistEngine:
         if not self.state.anchor.chassis_name:
             h.chassis.status, h.chassis.strain_match = "unknown", "unknown"
             h.chassis.evidence_ids = []
-            h.chassis.gaps = ["本任务未指定生产菌株，底盘生产适用性尚未评估"]
+            h.chassis.gaps = ["任务生产菌株待填写；底盘生产适用性状态：待评估"]
         supplied = {normalized(n) for n in self.run.brief.existing_candidates}
         from .candidate_assessments import matching_candidates
         specified = matching_candidates(self.run.candidates, self.run.brief.existing_candidates)
@@ -932,12 +932,12 @@ class CoScientistEngine:
         count = 1
         narrow = ("Use the evidence_digest strata to keep population, intervention, endpoint and study design separate. "
                   "Each hypothesis must address one narrow, falsifiable question with its own supporting and contrary citation IDs. "
-                  "Do not merge clinical effects, animal mechanisms and engineered supply into one claim. "
-                  "Do not fill the quota with paraphrases of an evidence gap; fewer distinct hypotheses are allowed. "
+                  "Keep clinical effects, animal mechanisms and engineered supply in separate claims. "
+                  "Return distinct evidence-grounded hypotheses; the count may be below the quota. "
                   "A narrow source-observation card may use claim exactly 'Source {source_id} reports this observation: {full accepted quote}', "
                   "copying its accepted evidence condition and endpoint exactly and naming only the matching current entity and study species. "
                   "This reports a source observation only; keep inference, efficacy, equivalence and individual prediction outside that claim and explicitly unresolved. "
-                  "Do not paraphrase or append an inference to this exact observation form. ")
+                  "Preserve this exact observation form verbatim, with inference in separate claims. ")
         exploration = is_disease_exploration(self.run.brief)
         return [
             {
@@ -947,8 +947,8 @@ class CoScientistEngine:
             },
             {
                 **context,
-                "view": "人群/终点适用性与相反结果；提出能区分替代解释的问题" if exploration else "指定菌株/供给条件/可测暴露；寻找最便宜的区分性验证问题",
-                "instructions": narrow + f"Propose at most {count} hypotheses focused on a contrary or alternative explanation, not a second wording of the main intervention claim. Production unknown unless specific evidence. Temporary hypothesis_id; version=1,parent_version=null. At most 2 gap-driven tool requests. Tools: {self.registry.catalog()}",
+                "view": "人群/终点适用性与相反结果；提出能区分替代解释的问题" if exploration else "任务菌株/供给条件/可测暴露；寻找最便宜的区分性验证问题",
+                "instructions": narrow + f"Propose at most {count} hypotheses focused on a distinct contrary or alternative explanation. Production unknown unless specific evidence. Temporary hypothesis_id; version=1,parent_version=null. At most 2 gap-driven tool requests. Tools: {self.registry.catalog()}",
             },
         ]
 
@@ -993,7 +993,7 @@ class CoScientistEngine:
                     break
                 h.hypothesis_id = "h_" + digest([view, h.title, h.claim])[:12]
                 h.version, h.parent_version = 1, None
-                h.status = "proposed"  # generation cannot approve its own draft
+                h.status = "proposed"  # generation creates proposed drafts; independent review determines support
                 h.changes = []
                 self.state.hypotheses.append(self.normalize_card(h))
             for proposal in draft.tool_requests[:2]:
@@ -1018,7 +1018,7 @@ class CoScientistEngine:
                     # or pretending that an HTTP lookup occurred.
                     rejected = ToolRequest(name=proposal.name, arguments={"invalid_proposal": True})
                     requests.append(self.scheduler.create(rejected, reason=
-                                    "模型补证 JSON 未通过确定性解析；仅记录参数拒绝，不执行 HTTP"))
+                                    "补证参数状态：JSON 格式校验失败、参数已拒绝；HTTP 请求状态：未执行"))
         self.finish(
             item,
             "generation",
@@ -1027,7 +1027,7 @@ class CoScientistEngine:
         )
         self.run.warnings.extend("Generation worker: " + f for f in failures)
         if not self.state.hypotheses:
-            raise RuntimeError("No hypotheses returned; do not fabricate a research contract")
+            raise RuntimeError("Hypothesis generation returned an empty result; research-plan status: pending")
         return requests
 
     def proximity(self):
@@ -1094,10 +1094,10 @@ class CoScientistEngine:
             "claim_relation_contract": {
                 "version": 2,
                 "scope": "source_observation only; default version 1 remains the inference path",
-                "rule": "A main claim may be supported as a source observation only when its entire text is exactly 'Source {source_id} reports this observation: {full accepted quote}'. Set relation_schema_version=2 and claim_scope=source_observation. Include one evidence_relations entry with schema_version=2, exact claim_id/hypothesis_id/version, evidence_id/source_id, the unique current entity_id, relation=supports, and study_system/condition/endpoint copied exactly from that evidence. The card condition/endpoint and requested species must match. A label alone cannot validate a relationship.",
-                "limits": "Global mixed/opposes describes the study result, separately from support of this literal observation. No paraphrase, partial quote, appended inference, cross-species projection, efficacy, equivalence or individual prediction is supported by this exception. A supported observation does not make the complete card or therapeutic candidate supported. Review all other claims independently; preserve contrary and unknown findings.",
+                "rule": "A main claim may be supported as a source observation only when its entire text is exactly 'Source {source_id} reports this observation: {full accepted quote}'. Set relation_schema_version=2 and claim_scope=source_observation. Include one evidence_relations entry with schema_version=2, exact claim_id/hypothesis_id/version, evidence_id/source_id, the unique current entity_id, relation=supports, and study_system/condition/endpoint copied exactly from that evidence. The card condition/endpoint and requested species must match. Relationship validation requires every listed field and matching check.",
+                "limits": "Global mixed/opposes describes the study result, separately from support of this literal observation. This exception supports the complete verbatim source observation only. Paraphrases, partial quotes, appended inferences, cross-species projections, efficacy, equivalence, individual prediction and whole-card/candidate support each require independent evidence and review. Review all other claims independently; preserve contrary and unknown findings.",
             },
-            "instructions": "Review each exact hypothesis_id/version AND every supplied claim_id in claim_reviews. Never see generator self-scores. Retain/revise/withhold with specific objections and needed evidence. valid_evidence_ids may select that card's existing accepted IDs or new_evidence IDs that you also attach to that exact version's claim_reviews with valid continuous source quotations. New sources may be extracted into new_evidence with exact continuous quotation and location; claim_reviews must reference that evidence_id and only that claim's query-returned sources. State supported/contested/context_only/unknown with study-system, condition and endpoint gaps. Distinguish completed review without support from missing review. For recent closest sources, fill prior_work with mechanism/object/strain/condition/endpoint overlaps and unconfirmed_difference; hits alone do not prove novelty. Unknown production, ambiguous intervention identities, species/endpoint extrapolation remain gaps. Research priority is not efficacy. Source-claim review is not experimental validation.",
+            "instructions": "Review each exact hypothesis_id/version AND every supplied claim_id in claim_reviews. Use the supplied evidence and review inputs; generator self-scores remain outside this review. Retain/revise/withhold with specific objections and needed evidence. valid_evidence_ids may select that card's existing accepted IDs or new_evidence IDs that you also attach to that exact version's claim_reviews with valid continuous source quotations. New sources may be extracted into new_evidence with exact continuous quotation and location; claim_reviews must reference that evidence_id and only that claim's query-returned sources. State supported/contested/context_only/unknown with study-system, condition and endpoint gaps. Distinguish completed review without support from missing review. For recent closest sources, fill prior_work with mechanism/object/strain/condition/endpoint overlaps and unconfirmed_difference; novelty conclusions require these source comparisons and the recorded search scope. Unknown production, ambiguous intervention identities, species/endpoint extrapolation remain gaps. Research priority, efficacy and experimental validation have separate assessments; this review evaluates source-claim support.",
         }
 
     def review(self, cards, title):
@@ -1231,7 +1231,7 @@ class CoScientistEngine:
             item,
             "ranking",
             "completed" if self.state.comparisons else "skipped",
-            f"{len(self.state.comparisons)} 场实际比较；不足两个合格方案时不生成比赛",
+            f"{len(self.state.comparisons)} 场实际比较；成对比较需要至少两个合格方案",
         )
 
     def evolve(self):
@@ -1274,7 +1274,7 @@ class CoScientistEngine:
                     "inference_gaps",
                 )
             ):
-                continue  # cosmetic rewording alone is not a scientific revision
+                continue  # scientific revisions require substantive changes beyond wording
             seen.add(h.hypothesis_id)
             h.version, h.parent_version, h.status = old.version + 1, old.version, "revised"
             h = self.normalize_card(h)
@@ -1301,7 +1301,7 @@ class CoScientistEngine:
             "reviews": [r.model_dump() for r in self.state.reviews if (r.hypothesis_id, r.version) in keys],
             "comparisons": [c.model_dump() for c in self.state.comparisons
                             if (c.left_id, c.left_version) in keys and (c.right_id, c.right_version) in keys],
-            "instructions": "Select at most 3 supplied latest versions as research questions. Select evidence IDs from the card's original citations and its exact-version reviewed_evidence_associations; original card citations are a historical generation snapshot, not the full updated evidence set. Consider mixed/opposing findings and scope. Include only references actually relevant to the contract question, never all new IDs mechanically. Unknowns stay unknown. Not a therapy list. Name minimal validation and resource requirements. Parameter needs have value=null, measurement_required, explicit units and reason; no inferred numerical PK/PD/production parameters. Revised versions have not inherited old rankings. Missing review/support means needs_evidence; completed review without support is distinct from absent review.",
+            "instructions": "Select at most 3 supplied latest versions as research questions. Select evidence IDs from the card's original citations and its exact-version reviewed_evidence_associations; original card citations record the generation snapshot; reviewed_evidence_associations supplies subsequent reviewed links. Consider mixed/opposing findings and scope. Include only references relevant to the research-plan question. Unknowns stay unknown. Present these as research questions; therapeutic recommendations require their own evaluation. Name minimal validation and resource requirements. Parameter needs have value=null, measurement_required, explicit units and reason. PK/PD/production values remain null until sourced measurements are available. Rankings are specific to each reviewed version. Missing review/support means needs_evidence; completed review without support is distinct from absent review.",
         }
         from .closing_context import compact_closing_context
         return compact_closing_context(payload)
@@ -1458,7 +1458,7 @@ class CoScientistEngine:
                 {
                     "brief": task_context(self.run.brief, include_documents=True),
                     "memory": [] if is_disease_exploration(self.run.brief) else self.store.search_memory(project_id, self.run.brief.disease, limit=3),
-                    "instructions": "Freeze user species/strain/constraints; do not rewrite them. Plan English Europe PMC queries for mechanism, intervention, and contrary evidence; no scientific assertions. Use max 3 initial queries, reserve searches for claim-level novelty. Unspecified endpoint remains a clarification question. Memory is a lead, not new evidence.",
+                    "instructions": "Preserve the task species, strain and constraints exactly. Plan English Europe PMC queries for mechanism, intervention, and contrary evidence; return search plans only. Use max 3 initial queries, reserve searches for claim-level novelty. Unspecified endpoint remains a clarification question. Memory supplies leads with their original evidence provenance.",
                 },
                 output_cap=self.output_allowance(),
             )
@@ -1483,7 +1483,7 @@ class CoScientistEngine:
         provided = [s for s in self.run.sources if s.text.strip() and
                     s.evidence_scope in {"abstract", "full_text", "local_document"}]
         if self.candidate_assessment_mode() and provided:
-            # Availability is not acceptance or sufficient evidence. Review the
+            # Availability, acceptance and evidence sufficiency have separate statuses. Review the
             # supplied bounded material first; online coverage remains unknown.
             self.flow.new_query("landscape", "provided_materials_first",
                 "候选评估优先审查已有材料；本阶段未执行在线扩展", status="skipped",
@@ -1523,7 +1523,7 @@ class CoScientistEngine:
             f"{len(self.run.evidence)} 个通过自动原文与语义审查的证据",
         )
         if not self.run.evidence:
-            raise RuntimeError("No reviewed evidence; do not synthesize supported hypotheses")
+            raise RuntimeError("Accepted evidence count: 0; supported hypothesis synthesis requires reviewed evidence")
         if self.candidate_assessment_mode():
             self.review_candidate_evaluations()
             self.hypothesis_expansion_started = self.admit_candidate_hypothesis_expansion()
@@ -1775,7 +1775,7 @@ def render_contracts(run):
                 f"- 测量需求 `{cell(need.variable)}` ({cell(need.unit)})：{need.why_needed}；值未提供。"
             ]
     if not state.contracts:
-        lines += ["本轮未生成研究合同；已保存假说、预算和停止原因供继续研究使用。", ""]
+        lines += ["本轮研究计划状态：待生成；已保存假说、预算和停止原因，支持继续研究。", ""]
     lines += ["## 局限", ""] + ["- " + x for x in state.limitations]
     return "\n".join(lines) + "\n"
 

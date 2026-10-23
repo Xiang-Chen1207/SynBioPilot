@@ -110,8 +110,9 @@ or this schema. Return ONLY the supplied JSON schema. No tools, browsing or rese
 Every text value must be a VERBATIM substring of its quote, and every quote must be
 a verbatim substring of the transcript or explicitly edited field values. Do not
 invent facts or normalize text. Missing facts are null/empty lists. In particular,
-autism/ASD does not imply children, NAC, SFN, L168, WCFS1, WetLab or a target. 'Patients'
-does not specify age. Do not infer a species or chassis. Keep exclusions/negations:
+For autism/ASD, extract children, NAC, SFN, L168, WCFS1, WetLab or a target only
+when grounded in the input. 'Patients' leaves age unknown. Species and chassis
+also require explicit input grounding. Keep exclusions/negations:
 '不要NAC'/'do not consider NAC' means stance=exclude, never include. An uncertain
 candidate mention has stance=uncertain. Multiple diseases need clarification unless
 the user explicitly selects a primary disease. Distinguish finding candidates from
@@ -258,7 +259,7 @@ def grounded_draft(raw, messages, parent=None):
     else:
         brief["task_intent"] = "legacy" if guidance else "disease_exploration"
         if intent == "candidate_assessment":
-            questions.append("No candidate has been specified for assessment. Please name a candidate or choose disease exploration.")
+            questions.append("Candidate assessment needs an input candidate. Enter its name or choose autonomous disease exploration.")
     if intent == "unclear" or extracted.conflict:
         questions.append("The research direction is ambiguous or conflicting. Please clarify the main question for this study." + (" " + extracted.conflict if extracted.conflict else ""))
     if not brief["disease"].strip() and not diseases:

@@ -55,7 +55,7 @@ def persist(tmp_path,run):
 
 
 def output_case(kind):
-    """Exercise RunLedger's acceptance boundary, not a claimed real model run."""
+    """Exercise RunLedger's acceptance boundary using synthetic call receipts."""
     limits=ResearchBudget(max_llm_calls=16,timeout_seconds=840,max_input_tokens=300000,max_output_tokens=96000)
     run=ResearchRun(run_id="r_synthetic_r3_"+kind,project_id="p_synthetic_ui",created_at=STAMP,updated_at=STAMP,
         status=ExecutionStatus.PARTIAL,brief=ResearchBrief(disease="SYNTHETIC R3 · "+kind,research_mode="co_scientist",budget=limits))

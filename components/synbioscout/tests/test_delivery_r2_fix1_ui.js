@@ -45,7 +45,7 @@ check("withdrawn conclusion retains an inspectable historical review without a f
  const ref="assessment_review:"+record.reviews[0].review_id;
  assert.equal(ui.artifactTarget(ref,run).item.assessment_status,"unreviewed");
 });
-check("ambiguous shared code cannot select the first of two entities",()=>{
+check("ambiguous shared code retains both unresolved entity alternatives",()=>{
  const run=fixture.runs.find(r=>r.presentation.fixture.case==="shared_alias");
  assert.equal(run.candidate_assessments.length,2);assert.equal(run.candidate_evaluations.length,0);
  assert.ok(run.candidate_assessments.every(c=>ui.publicCandidateAssessment(c).validated_evaluation===null));

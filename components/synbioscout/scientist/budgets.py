@@ -48,7 +48,7 @@ class RunLedger:
 
     def llm(self, system, user, schema_text):
         # UTF-8 byte count bounds tokenizer input conservatively. It includes
-        # schema text, but is not an exact tokenizer or billing/cost report.
+        # schema text. Exact tokenizer usage and provider billing are recorded separately.
         self.reserve_request(len((system + user + schema_text).encode()))
 
     def preflight(self, required_bytes, *, required_calls=1, required_output_bytes=0,
@@ -101,8 +101,8 @@ class RunLedger:
             self.output_holds.pop(reservation_id, None)
 
     def output(self, serialized, *, protected_output_bytes=0, call_allowance=None, reservation_id=None):
-        # Enforced before app interpretation. Codex CLI cannot enforce a server
-        # output-token cap; we explicitly do not claim a provider-side cost cap.
+        # Enforced before app interpretation. This is a local response-acceptance
+        # limit; provider-side output-token and cost caps are outside CLI control.
         amount = len(serialized.encode())
         with self.lock:
             self.output_holds.pop(reservation_id, None)

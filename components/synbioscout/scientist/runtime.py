@@ -44,7 +44,7 @@ def doctor(settings: ScientistSettings):
             "optional_providers": {"biomni": importlib.util.find_spec("biomni") is not None,
                 "paperqa": importlib.util.find_spec("paperqa") is not None,
                 "tooluniverse": importlib.util.find_spec("tooluniverse") is not None},
-            "note": "Optional frameworks are detected, not automatically invoked. Native adapters implement the core workflow."}
+            "note": "Native adapters execute the core workflow. Optional-framework detection reports availability; invocation remains disabled."}
 
 
 def compute_preflight(config_path: Path, start="prepare", until="md"):
@@ -186,7 +186,7 @@ class JobService:
                         run.co_scientist.events.append(AgentEvent(
                             event_id=f"event_{sequence:04d}", sequence=sequence,
                             agent_id="supervisor", kind="interruption", status="partial",
-                            title="服务重启，保存中断状态；没有自动恢复角色执行", created_at=utc_now()))
+                            title="服务已重启；角色执行保持中断状态，等待恢复", created_at=utc_now()))
                     self.store.save_run(run)
             for path in self.store.project_dir(pid).glob("compute/*/job.json"):
                 job = json.loads(path.read_text())

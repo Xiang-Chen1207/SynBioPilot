@@ -43,7 +43,7 @@ def source_observation_statement(source_id, quote):
     """v2's only licensed projection: a source reports this complete exact quote.
 
     This claims a recorded observation, not efficacy, equivalence, causality or
-    individual prediction. Paraphrases do not get this deterministic exception.
+    individual prediction. This deterministic exception requires the exact source-observation form.
     """
     return f"Source {source_id} reports this observation: {quote}"
 
@@ -107,7 +107,7 @@ def observation_study_objects(value):
 
     Whole source snapshots remain available for reproducibility. Mere human
     background, a target population, planned work and unknown experimental
-    objects cannot serve as affirmative participant evidence.
+    objects retain their grammatical role; participant evidence requires an affirmative participant relation.
     """
     objects, unresolved = set(), False
     section = "unstructured"
@@ -148,7 +148,7 @@ def observation_study_objects(value):
     return objects, unresolved
 
 
-# Conservative dependency vocabulary, not an assertion parser. Unknown, passive
+# Conservative vocabulary for dependency detection; assertion parsing has separate rules. Unknown, passive
 # and conditional supply wording never exempts the designated-strain evidence
 # requirement. Morphological families also cover producing/synthesizes, etc.
 _PRODUCTION_LANGUAGE = (
@@ -195,8 +195,8 @@ def supply_dependency(text):
 def affirmative_supply_span(h, evidence):
     """Require one affirmative original clause to identify strain, molecule and supply.
 
-    A model's study_system label alone cannot turn another strain's quotation
-    into a measurement of this strain. Conservative abstention is intentional.
+    Bind study_system to the strain named in the quotation. Other-strain evidence
+    retains its original strain scope; ambiguous assignments remain unresolved.
     """
     names = [norm(n) for n in h.molecule_names if n.strip()]
     if not names or not norm(h.chassis_name) or norm(h.chassis_name) not in norm(evidence.study_system):
@@ -215,8 +215,8 @@ def affirmative_supply_span(h, evidence):
 
         def bound(name, sentence=clause):
             molecule = re.escape(name)
-            # Capture entire product phrase/subject from a clause anchor. A
-            # hyphen, suffix noun, salt, receptor or derivative is not an alias.
+            # Capture the entire product phrase/subject from a clause anchor.
+            # Hyphens, suffix nouns, salts, receptors and derivatives retain their distinct chemical scope.
             active = re.fullmatch(rf"(?:the\s+)?{strain}\s+{_AUXILIARIES}{_SUPPLY_VERB}\s+(?P<object>.+)", sentence)
             if active and exact_object(active["object"], name, context=True):
                 return True
@@ -645,12 +645,12 @@ class ResearchFlow:
                 if (h.hypothesis_id, h.version) != (n.hypothesis_id, n.version):
                     continue
                 h.novelty.closest_source_ids = n.closest_source_ids
-                h.novelty.status = "insufficient_search"  # query hits cannot establish a novelty verdict
+                h.novelty.status = "insufficient_search"  # novelty verdicts require search-scope and prior-work comparisons
                 h.novelty.search_scope = "; ".join(f"{q.query} [{q.status}; {q.stop_reason}]" for q in queries)
             self.engine.state.novelty_searches = [q.model_dump() for q in self.data.queries if q.stage == "novelty"]
 
     def observation_relation_valid(self, h, claim, evidence, source, relation):
-        """Machine proof for v2 only; a reviewer label alone cannot unlock it."""
+        """Validate the complete v2 relation against deterministic source-projection rules."""
         from .candidate_assessments import matching_candidates, names_in_quote
         if (relation is None or relation.schema_version != 2 or relation.relation != "supports"
                 or claim.relation_schema_version != 2 or claim.assessment_scope != "source_observation"
@@ -717,7 +717,7 @@ class ResearchFlow:
                         == (claim.claim_id, h.hypothesis_id, h.version, e.evidence_id, e.source_id)
                         and source and self.observation_relation_valid(h, claim, e, source, link.claim_relation)):
                     matching.append(link)
-        # One source-anchored report, not a merged interpretation of studies.
+        # One source-anchored report; cross-study synthesis uses a separate claim.
         return len(refs) == 1 and len(matching) == 1
 
     def adjudicate(self, cards, drafts, evidence_drafts=(), prior_work=()):
@@ -790,16 +790,16 @@ class ResearchFlow:
             if observation:
                 if r.verdict == "supported" and (r.rejected_relation_ids or not self.observation_supports(h, c, refs)):
                     r.verdict = "context_only" if refs else "unknown"
-                    r.gaps.append("原文观察关系未通过完整逐字投影、实体/物种/条件/终点或唯一版本核验；不能用自报关系升级")
+                    r.gaps.append("原文观察关系核验失败：完整逐字投影、实体、物种、条件、终点及唯一版本均须匹配")
             else:
                 if r.verdict == "supported" and not any(e.polarity == "supports" for e in refs):
                     r.verdict = "context_only"
-                    r.gaps.append("全局证据极性未提供该推断主张的支持；mixed/negative不自动等同于该主张的方向")
+                    r.gaps.append("该推断主张的方向支持待补充；mixed/negative 按各自来源范围记录")
                 if any(e.polarity in {"opposes", "mixed"} for e in refs):
                     r.verdict = "contested" if r.verdict == "supported" else r.verdict
                 if r.verdict == "supported" and not self.scope_supports(h, c, refs):
                     r.verdict = "context_only"
-                    r.gaps.append("研究系统/条件/终点或指定菌株供给依据不匹配；未知/待验证措辞不豁免供给审查")
+                    r.gaps.append("供给依据需匹配研究系统、条件、终点和任务菌株；unknown/待验证状态同样进入供给审查")
             c.state = r.verdict
             pending_note = "需要逐主张支持/反证与研究系统、条件、终点适用性审查"
             c.gaps = list(dict.fromkeys([gap for gap in c.gaps if gap != pending_note] + r.gaps))
@@ -918,7 +918,7 @@ class ResearchFlow:
             "invalid_receipts": "主张审查收据或来源关联不一致；需要核对原文片段与版本归属",
             "reviewed_evidence_missing": "主主张已完成同版本审查，但缺少通过来源与片段校验的引用；需要补齐证据",
             "reviewed_not_supported": "主主张已完成同版本审查，现有证据未支持该主张；需要针对反证、适用条件与终点缺口补证",
-            "source_observation_supported": "窄原文观察已完成同版本审查并获支持；预测、干预适用性与整卡疗效结论尚未因此得到支持",
+            "source_observation_supported": "窄原文观察已完成同版本审查并获支持；预测、干预适用性与整卡疗效结论各自需要支持证据",
             "supported": "",
         }[self.main_review_state(h)]
 

@@ -3,7 +3,7 @@
 ## Create a study
 
 1. Enter your research question. “Explore migraine” and “Assess caffeine for migraine” are editable examples of the two task types; clicking one fills the text box only.
-2. Select **Understand request**. The configured model extracts a draft; this does not start research.
+2. Select **Understand request**. The configured model extracts a draft; confirmation then starts research.
 3. Check the disease, symptoms, population, candidate, task intent and any follow-up questions. Unknown details stay unspecified. Use the research settings form to edit these inputs directly.
 4. Review source-package selection, task scope and budgets. Confirm the current draft, then start the study once.
 5. If submission status is uncertain, inspect its receipt before trying again.

@@ -2,7 +2,7 @@
 
 The experimental unit is the biological replicate. Technical measurements are
 averaged before summaries or confidence intervals are calculated. This module
-does not infer molecular identity, efficacy, or a mechanism from assay values.
+reports assay measurements and fits; identity, efficacy and mechanisms use separate evidence.
 """
 
 from __future__ import annotations
@@ -253,7 +253,7 @@ def _fit_dose(group: pd.DataFrame, endpoint: str) -> dict[str, Any]:
         or fractional.max() < 0.8
     ):
         result["reason"] = (
-            "Recorded doses do not bracket the fitted midpoint and both response plateaus sufficiently."
+            "Dose coverage requires additional observations around the fitted midpoint and both response plateaus."
         )
         return result
     predicted = _four_parameter(x, *parameters)
@@ -593,7 +593,7 @@ def analyze_experiment(csv_path: Path, spec: ExperimentSpec, output: Path) -> di
         )
     if "SYNTHETIC" in spec.name.upper():
         analysis["warnings"].append(
-            "SYNTHETIC illustrative data; these measurements are not real wet-lab results."
+            "SYNTHETIC assay data for software demonstration."
         )
     summary: dict[str, Any] = {
         "schema_version": 1,

@@ -37,7 +37,7 @@ def valid_scores(frame):
 def candidates(cfg):
     root = Path(cfg['run']['output'])
     library = library_frame(cfg)
-    # The library is structurally deduplicated BEFORE inference, not after ranks.
+    # Structural deduplication precedes inference and ranking.
     if library.smiles.eq('').any() or library.smiles.duplicated().any():
         raise ValueError('Use a structurally deduplicated, canonical-isomeric-SMILES library; see prepare-library')
     library_ids = set(library.compound_id)

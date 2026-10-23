@@ -1,4 +1,4 @@
-"""SYNTHETIC optional expansion cannot erase an already reviewed core result."""
+"""SYNTHETIC reviewed core results survive optional-expansion failure."""
 from test_delivery_r2_chain import (
     AssessmentController,
     ThreadClock,

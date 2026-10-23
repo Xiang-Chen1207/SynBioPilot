@@ -88,8 +88,8 @@ def test_fulltext_excerpt_scope_and_original_continuous_window_match_context_and
     for project in (public_source_view, public_literature_source, public_tool_source):
         public = project(s.model_dump())
         assert public["evidence_scope"] == "abstract"
-        # A tool observation deliberately omits text, so its window cannot be
-        # reverified from metadata; ordinary source views retain the real text.
+        # This tool observation omits text and retains a null window;
+        # ordinary source views verify the window against their retained text.
         projected = {**expected, "original_window": None} if project is public_tool_source else expected
         assert public["metadata"]["source_scope"] == projected
         assert project(public)["metadata"]["source_scope"] == projected
@@ -124,7 +124,7 @@ def test_partial_excerpt_never_becomes_fresh_fulltext_and_missing_window_is_not_
     assert source_scope_view(s)["original_window"] is None
     assert source_scope_view(s)["fresh_fulltext"] is False
     s.metadata.update(excerpt_start=100, excerpt_end=300)
-    assert source_scope_view(s)["original_window"] is None  # Does not match the stored continuous text length.
+    assert source_scope_view(s)["original_window"] is None  # Window length differs from the stored continuous text length.
     s.metadata.update(excerpt_start=True, excerpt_end=10)
     assert source_scope_view(s)["original_window"] is None
     assert source_scope_view({"metadata": {"query_receipt": {"operation": []}}})["acquisition"] == "unknown"

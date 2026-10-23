@@ -22,8 +22,8 @@ Install the `chemistry` extra for this command. The input accepts `smiles` or
 Outputs are `molecules.csv`, `source_records.csv` and `rejected.csv`.
 Generated IDs follow sorted canonical SMILES and are specific to that library
 release; adding structures can change IDs. Regenerate or remap model predictions
-and embeddings when the library changes. This importer reads CSV exports; it
-does not download or parse every database's native archive format.
+and embeddings when the library changes. This importer reads normalized CSV
+exports; database-specific download and archive parsing precede this entry point.
 
 ## Model scores
 
@@ -69,7 +69,7 @@ benchmark metrics that map E to negative are outside this postprocessing step.
 Copy `configs/demo.json` and replace its library, output, `run.top_k` and `inputs`
 paths with real files. Set `inputs.kind` to `imported_predictions` and
 `run.top_k` to 1000. Run `postprocess` into a fresh output directory.
-The command recomputes ranking and stratification but invokes none of the
-predictors that produced the input tables. The real pipeline's `gate` stage only
-assesses complete-score candidates; imported extra Gate rows do not enter the
-ranked output when composite inputs are incomplete.
+The command recomputes ranking and stratification from the saved prediction
+tables. The real pipeline's `gate` stage assesses complete-score candidates.
+Ranking membership follows composite-input completeness; Gate records attach
+to those eligible candidates.

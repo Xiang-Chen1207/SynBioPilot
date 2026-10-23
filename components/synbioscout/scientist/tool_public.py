@@ -1,6 +1,6 @@
 """Bounded, explicit public views of lightweight tool plans and observations.
 
-Persisted provider snapshots are research evidence, not an export schema. These
+Persisted provider snapshots provide research evidence; public exports use their own schema. These
 pure projections deliberately never copy an arbitrary mapping, provider payload,
 prompt, request header or diagnostic into a public result. Missing legacy fields
 remain missing, and no scientific conclusion is inferred from a database row.
@@ -702,7 +702,7 @@ def public_tool_source(value: Any) -> dict:
         if provider == "europe_pmc":
             public.update(public_publication_metadata(metadata))
         # Database snapshots from legacy tools have no tool_name. Provider-specific
-        # scalar argument names are still known and do not imply execution.
+        # scalar argument names describe the schema; execution is tracked by call records.
         names = [name for name, candidate in _PROVIDERS.items() if candidate == provider]
         if isinstance(metadata.get("parameters"), dict):
             public["parameters"] = {}

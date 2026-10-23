@@ -52,8 +52,8 @@ def exercise(tmp_path, monkeypatch):
         assert not store.list_projects() and not submits
         assert draft["brief"]["existing_candidates"] == ["NAC"]
         assert not draft["brief"]["background_package_id"] and not draft["brief"]["population"]
-        # Explicit manual confirmation of the historical bounded scenario.
-        # This is not a claim the fixed parser inferred WetLab or the package.
+        # Submit the historical scenario through the confirmation endpoint.
+        # WetLab and package fields come from the scenario; parser extraction has separate tests.
         edited = client.patch("/api/intake/drafts/" + draft["draft_id"],
                               json={"revision": draft["revision"], "brief": brief.model_dump(mode="json")})
         assert edited.status_code == 200, edited.text

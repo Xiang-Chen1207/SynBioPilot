@@ -103,7 +103,7 @@ screening, ADMET, ChassisGate and MD execute through their dedicated entry point
 outside this role; direct execution by this role is disabled.
 Stay anchored to the exact species, strain, endpoint, engineering boundary and resources.
 Evidence IDs must exist in supplied accepted evidence. Preserve opposing findings.
-Preserve candidate origins: assessment inputs retain user_supplied; candidates
+Preserve candidate origins: candidate-assessment inputs retain the user_supplied origin; candidates
 identified through current research retain their literature or synthesis origin.
 Chassis production requires strain-and-condition-specific production evidence;
 host GO/Reactome annotations and binding assays retain their host-pathway or

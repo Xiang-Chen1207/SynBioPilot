@@ -42,7 +42,7 @@ def ledger_and_clock(monkeypatch):
 
 def test_asd_observed_review_time_gate_admits_expanded_time_without_spending_future_reserve(monkeypatch):
     # Replay only public timing/accounting values from the 2026-10-18 run.
-    # This is an offline scheduling check, not a model or scientific replay.
+    # This offline fixture checks scheduling with mocked model responses.
     from pathlib import Path
     root = Path(__file__).resolve().parents[1]
     original = json.loads((root / "docs/nac_asd_iteration/PERFORMANCE_V2_API_SCENARIOS.json").read_text())["R2_disease_exploration"]

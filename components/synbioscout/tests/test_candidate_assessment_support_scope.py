@@ -1,4 +1,4 @@
-"""SYNTHETIC FIX1: a general endpoint result cannot support a named candidate."""
+"""SYNTHETIC FIX1: named-candidate support requires matched entity and condition evidence."""
 import csv
 import io
 import json
@@ -81,7 +81,7 @@ def test_generic_supported_main_does_not_project_to_candidate():
 def test_candidate_support_requires_its_own_applicable_supported_association(explicit_entity, polarity, condition, expected):
     engine, flow, h = reviewed_case(explicit_entity=explicit_entity, candidate_polarity=polarity, candidate_condition=condition)
     if polarity in {"context", "supports"}:
-        assert flow.main_reviewed(h)  # generic support cannot rescue this candidate's context/mismatched condition
+        assert flow.main_reviewed(h)  # candidate support follows its entity and condition scope
     card = result_document(engine.run)["candidate_assessments"][0]
     assert card["scientific_status"] == expected
     assert card["review_associations"]

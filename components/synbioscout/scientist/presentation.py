@@ -90,7 +90,7 @@ def presented_run(run: ResearchRun) -> ResearchRun:
             if h.status == "reviewed" and (len(reviews) != 1 or reviews[0].verdict != "retain"
                 or not accepted.intersection(effective_refs).intersection(reviews[0].valid_evidence_ids)):
                 h.status = "proposed" if effective_refs else "needs_evidence"
-                h.inference_gaps = list(dict.fromkeys(h.inference_gaps + ["没有对应版本的有效独立上下文审查，生成器自填状态不作为已审查依据"]))
+                h.inference_gaps = list(dict.fromkeys(h.inference_gaps + ["对应版本的独立上下文审查待完成；已审状态以有效审查记录为依据"]))
             if co.research_flow and h.status == "reviewed" and not checker.main_reviewed(h):
                 h.status = "needs_evidence"
                 h.inference_gaps.append(checker.main_review_gap(h) or "当前版本逐主张适用性仍需补证")
@@ -145,7 +145,7 @@ def result_document(run: ResearchRun) -> dict:
     notes = ["研究线索、计算预测与实测结果分别记录，供研究规划使用。",
              "原文与语义审查对应所列来源、研究体系、条件和终点；实验验证状态单独记录。"]
     if not view.brief.phenotype:
-        notes.append("尚未指定目标表型；目前检索覆盖疾病总体，需进一步明确研究终点。")
+        notes.append("当前检索覆盖疾病总体；目标表型和研究终点待明确。")
     if any(c.role_status == "legacy_inferred" for c in view.candidates):
         notes.append("历史角色标签来源为原记录的明确文本线索；当前审查状态为待复核。")
     if any(not t.related_cells for t in view.targets):

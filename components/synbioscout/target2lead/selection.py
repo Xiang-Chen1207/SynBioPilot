@@ -253,7 +253,7 @@ def _select_merged(cfg):
         row = dict(source)
         cid = row['compound_id']
         a, g = admet.get(cid, {}), gate.get(cid, {})
-        # Assessment outputs cannot replace the model's actual score/rank/provenance.
+        # Keep assessment outputs alongside the model's original score, rank and provenance.
         protected = {'model', 'model_rank', 'raw_score', 'status', 'original_compound_id',
                      'original_ids', 'source_routes', 'evidence_ids', 'provenance'}
         row.update({key: value for key, value in a.items() if key not in protected})
@@ -328,7 +328,7 @@ def _select_merged(cfg):
         row['assessment_route'] = 'literature'
         row['model_route_md_selected'] = row['compound_id'] in model_selected
         row['md_selected'] = False
-        row['md_policy'] = 'Literature shortlist does not schedule MD; model-route overlap is reported separately'
+        row['md_policy'] = 'Literature shortlist records research leads; MD scheduling follows the model route, with overlap reported separately'
         if row.get('decision') == 'hold':
             row['selection_eligible'] = False
             row['assessment_state'] = 'held' if row['assessment_state'] != 'failed' else 'failed'

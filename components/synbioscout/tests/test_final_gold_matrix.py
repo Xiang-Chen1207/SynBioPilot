@@ -1,6 +1,6 @@
 """Six unmodified public source windows, transparent judgements and fake clock.
 
-This is a software/serialization matrix, not a clinical accuracy benchmark.
+This matrix evaluates software behavior and serialization with synthetic fixtures.
 No discarded historical provider response is read or reconstructed.
 """
 import hashlib

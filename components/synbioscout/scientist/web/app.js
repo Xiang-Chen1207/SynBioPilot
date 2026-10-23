@@ -106,7 +106,6 @@ const SYSTEM_UI_TEXT = Object.freeze({
   "结构化结果已返回，下一阶段仍需核对适用性。": "Structured results returned; applicability still requires review in the next stage.",
   "本地调用准备或记录保存失败；实际模型调用另行计数。": "Local call preparation or record persistence failed. Actual model calls are counted separately.",
   "调用失败或超出预算；已保存状态与恢复信息。": "The call failed or exceeded its budget; status and recovery information are saved.",
-  "可选调用没有可用结果；保留已审版本，继续尝试必要收尾。": "The optional call produced no usable result. Retain reviewed versions and attempt required closing steps.",
   "独立审查候选结论及适用范围": "Independently review the candidate conclusion & applicability",
   "独立候选结论审查": "Independent candidate conclusion review",
   "候选结论独立审查已保存；科学支持程度与流程完成分别记录。": "Independent conclusion review saved. Scientific support and workflow completion are recorded separately.",
@@ -121,7 +120,6 @@ const SYSTEM_UI_TEXT = Object.freeze({
   "形成最少问题卡；有收尾余量才加入第二视角": "Create the minimum question cards; add a second perspective only if closing budget remains",
   "保存有界补证计划": "Save a bounded evidence-gathering plan",
   "模型提出缺口；执行器先校验参数和唯一身份。": "The model identifies a gap; the executor first validates parameters and unique identity.",
-  "模型补证 JSON 未通过确定性解析；仅记录参数拒绝，不执行 HTTP": "Evidence-request JSON failed deterministic parsing. Record parameter rejection only; do not perform HTTP requests.",
   "按实体、机制、菌株、条件和终点机械去重": "Deduplicate by entity, mechanism, strain, conditions and endpoint",
   "在同任务约束下比较最多三个方案": "Compare up to three options under the same task constraints",
   "条件匹配检查未通过，本次比较状态为跳过": "Condition matching failed; comparison status: skipped",
@@ -167,7 +165,6 @@ const SYSTEM_UI_TEXT = Object.freeze({
   "菌株错配已纠正，生产结论按实际菌株重新评价": "Strain mismatch corrected; production conclusions are reassessed for the task strain",
   "底盘生产评价使用菌株和条件匹配的生产、机制及模型证据": "Chassis-production assessment uses strain-and-condition-matched production, mechanism and model evidence",
   "生产适用性待评估：需要菌株与条件精确匹配的生产依据": "Production applicability pending: exact strain-and-condition production evidence is required",
-  "本任务未指定生产菌株，底盘生产适用性尚未评估": "No production strain was specified; chassis-production applicability is not assessed",
   "审查缺失或重复，保留待复核状态": "Review is missing or duplicated; retain a pending-review state",
   "完整版本特异审查": "Complete version-specific review",
   "该假说缺少其自身已审查的支持证据": "This hypothesis lacks its own reviewed supporting evidence",
@@ -188,7 +185,6 @@ const SYSTEM_UI_TEXT = Object.freeze({
   "输入就绪、模型环境、权重、缓存与评分执行状态分别记录。": "Input readiness, model environment, weights, caches and scoring status are recorded separately.",
   "本检查读取文件存在状态；文件内容变更后重新准备并审查。": "This check reads file-presence status; prepare and review files again after content changes.",
   "HDAC2 缓存对应其构建体、链、序列、口袋和版本；新靶点使用匹配的新缓存。": "HDAC2 caches match their construct, chain, sequence, pocket and version; new targets use matching new caches.",
-  "ADMET、ChassisGate、对接和MD保持独立阶段，未因本检查而执行。": "ADMET, ChassisGate, docking and MD remain separate stages and are not executed by this check.",
   "文献候选与靶点筛选分别保留各自的作用机制和靶点关系。": "Literature candidates and target screening retain their respective mechanisms and target relationships.",
   "多角色通过共享后端的分离上下文完成生成、反思与审查，后端配置随运行保存。": "Roles use separate contexts on the shared backend for generation, reflection and review; backend configuration is saved with the run.",
   "研究优先级依据证据适用性、可检验性和资源匹配进行比较。": "Research priorities compare evidence applicability, testability and resource fit.",
@@ -199,7 +195,6 @@ const SYSTEM_UI_TEXT = Object.freeze({
   "主张审查由共享后端的分离上下文执行，保存逐条主张与来源的审查记录。": "Claim review uses separate contexts on the shared backend and saves claim-to-source review records.",
   "本次检索结果及其范围随查新记录保存": "Search results and their scope are saved with the novelty record",
   "本合同列出研究优先级、证据依据及参数测量需求。": "This plan lists research priorities, evidence and parameter measurement needs.",
-  "本轮未生成研究合同；已保存假说、预算和停止原因供继续研究使用。": "No research plan was generated this run; saved hypotheses, budgets and stop reasons support continuation.",
   "历史角色标签来源为原记录的明确文本线索；当前审查状态为待复核。": "Historical role labels derive from explicit text in the original record; current review status: pending.",
   "部分靶点的靶细胞信息待补充。": "Target-cell information remains to be added for some targets.",
   "部分干预线索的单一化学实体待解析；小分子筛选入口使用已解析的单一结构。": "Some intervention leads await single-entity resolution; small-molecule screening uses resolved individual structures.",
@@ -208,7 +203,12 @@ const SYSTEM_UI_TEXT = Object.freeze({
   "科研用途。导出内容包含当前研究与证据；分享前检查私人研究资料。": "For research use. Exports contain the current research and evidence; check private research information before sharing.",
   "科研用途：识别靶点、候选分子及关联证据": "For research use: identify targets, candidate molecules and linked evidence",
   "列名映射示例；实际列名以导入 CSV 为准。": "Column mapping example; use the actual column names in the imported CSV.",
-  "用于展示四模型评分流程的 50 分子界面示例。": "A 50-molecule interface example for the four-model scoring workflow."
+  "用于展示四模型评分流程的 50 分子界面示例。": "A 50-molecule interface example for the four-model scoring workflow.",
+  "任务生产菌株待填写；底盘生产适用性状态：待评估": "Task production strain pending; chassis-production applicability: awaiting assessment",
+  "补证参数状态：JSON 格式校验失败、参数已拒绝；HTTP 请求状态：未执行": "Evidence-request JSON validation: failed; parameters: rejected; HTTP status: not_run",
+  "ADMET、ChassisGate、对接和 MD 由各自执行入口运行，阶段状态分别记录。": "ADMET, ChassisGate, docking and MD run through their dedicated entry points, with separate stage records.",
+  "可选调用结果为空；保留已审版本并继续必要收尾。": "Optional-call result: empty. Retain reviewed versions and continue required closing steps.",
+  "本轮研究计划状态：待生成；已保存假说、预算和停止原因，支持继续研究。": "Research-plan status: pending. Saved hypotheses, budgets and stop reasons support continuation."
 });
 // Historical software labels only: exact display aliases for saved records.
 // Keep these keys readable for compatibility; current producers use the table above.
@@ -257,7 +257,12 @@ const LEGACY_SYSTEM_UI_TEXT = Object.freeze({
   "输入状态不表示模型环境、权重或缓存已就绪，也不表示评分已运行。": "Input readiness, model environment, weights, caches and scoring status are recorded separately.",
   "本检查未重新验证文件内容；修改过的文件须重新准备与审查。": "This check reads file-presence status; prepare and review files again after content changes.",
   "HDAC2演示缓存仅对应其固定构建体、链、序列、口袋和版本，不能只改靶点名复用。": "HDAC2 caches match their construct, chain, sequence, pocket and version; new targets use matching new caches.",
-  "文献路线的候选分子不必强制作用于这个靶点。": "Literature candidates and target screening retain their respective mechanisms and target relationships."
+  "文献路线的候选分子不必强制作用于这个靶点。": "Literature candidates and target screening retain their respective mechanisms and target relationships.",
+  "本任务未指定生产菌株，底盘生产适用性尚未评估": "Task production strain pending; chassis-production applicability: awaiting assessment",
+  "模型补证 JSON 未通过确定性解析；仅记录参数拒绝，不执行 HTTP": "Evidence-request JSON validation: failed; parameters: rejected; HTTP status: not_run",
+  "ADMET、ChassisGate、对接和MD保持独立阶段，未因本检查而执行。": "ADMET, ChassisGate, docking and MD run through their dedicated entry points, with separate stage records.",
+  "可选调用没有可用结果；保留已审版本，继续尝试必要收尾。": "Optional-call result: empty. Retain reviewed versions and continue required closing steps.",
+  "本轮未生成研究合同；已保存假说、预算和停止原因供继续研究使用。": "Research-plan status: pending. Saved hypotheses, budgets and stop reasons support continuation."
 });
 function systemText(value) {
   if (typeof value !== "string") return value;
@@ -268,7 +273,7 @@ function systemText(value) {
   if ((match = /^视角 ([12])$/.exec(value))) return "Perspective " + match[1];
   if ((match = /^(\d+) 个实际返回假说；(\d+) 个视角失败$/.exec(value))) return match[1] + " hypotheses returned; " + match[2] + " perspectives failed";
   if ((match = /^规则模块得到 (\d+) 组；保留全部版本与不同反证$/.exec(value))) return "Rule-based module produced " + match[1] + " groups; all versions and distinct counterevidence retained";
-  if ((match = /^(\d+) 场实际比较；不足两个合格方案时不生成比赛$/.exec(value))) return match[1] + " comparisons recorded; no tournament is fabricated with fewer than two eligible options";
+  if ((match = /^(\d+) 场实际比较；(?:成对比较需要至少两个合格方案|不足两个合格方案时不生成比赛)$/.exec(value))) return match[1] + " comparisons recorded; pairwise comparison requires at least two eligible options";
   if ((match = /^(\d+) 个有依据的新版，旧版仍保留$/.exec(value))) return match[1] + " evidence-guided new versions; earlier versions retained";
   if ((match = /^(\d+) 份自动生成、供后续审阅的研究计划$/.exec(value))) return match[1] + " automatically generated research plans ready for review";
   // Compatibility for saved pre-update event summaries.
@@ -278,7 +283,7 @@ function systemText(value) {
   if ((match = /^疾病：([\s\S]*)；已保存输入引用 (\d+) 项$/.exec(value))) return "Disease: " + match[1] + "; " + match[2] + " saved input references";
   if ((match = /^计划 ([A-Za-z0-9_:-]+|未记录)；缺口 ([A-Za-z0-9_:-]+|未记录)；参数经确定性契约核对$/.exec(value))) return "Plan " + (match[1] === "未记录" ? "not recorded" : match[1]) + "; gap " + (match[2] === "未记录" ? "not recorded" : match[2]) + "; parameters checked against deterministic contracts";
   if ((match = /^([A-Za-z0-9_:-]+)；(Wall-time scheduling allowance exhausted|Input reservation budget exhausted|Output reservation budget exhausted|Model call budget exhausted)；UTF-8字节预留，非token计量或费用。$/.exec(value))) return match[1] + "; " + match[2] + "; UTF-8 byte reservation, not token usage or cost.";
-  if (value.startsWith("本轮未完成全部研究阶段：")) return "Not all research stages completed this run: " + value.slice("本轮未完成全部研究阶段：".length);
+  if (value.startsWith("本轮未完成全部研究阶段：")) return "Research stages remaining: " + value.slice("本轮未完成全部研究阶段：".length);
   return value;
 }
 function displayActionSummary(event, maximum = 1200) {return systemText(safeEventSummary(event, maximum));}
@@ -451,7 +456,7 @@ function selectRun(run, summary = null) {
   }
   clearTimeout(state.poll); state.poll = null; state.run = run;
   if (state.selected?.run_id !== run) {
-    // The raw history endpoint has not applied /results' conservative status validation.
+    // The /results endpoint applies status validation to the raw history record.
     // Only expose task metadata while scientific results are still loading.
     state.selected = summary && ["queued", "running"].includes(summary.status) ? {
       run_id: summary.run_id, status: summary.status, brief: summary.brief,
@@ -485,7 +490,7 @@ async function loadProjects(preferred = state.project) {
   if (!selectionCurrent(epoch, project, run)) return;
   state.projects = projects;
   optionList($("project"), projects, p => p.project_id, p => p.name, preferred, "New project (created automatically)");
-  // Initial visit has an immediately usable blank form. No historical result is misrepresented as a new output.
+  // Initial visits use a blank task form; saved results appear through history selection.
   state.project = $("project").value;
   await loadRuns();
 }
@@ -592,7 +597,7 @@ function sourceScopeView(source) {
   const original = scopes.includes(rawOriginal) ? rawOriginal : "unknown", excerpt = metadata.local_excerpt_only === true;
   const start = metadata.excerpt_start, end = metadata.excerpt_end;
   // Match Python's Unicode code-point offsets, not JS UTF-16 code units. Only
-  // the actual nonempty text can verify a window; metadata cannot certify it.
+  // the actual nonempty text verifies a window; metadata retains its declared scope.
   const window = excerpt && Number.isSafeInteger(start) && Number.isSafeInteger(end) && start >= 0 && start < end && end <= 1e12 &&
     typeof source?.text === "string" && source.text.length > 0 && end - start === Array.from(source.text).length ? {start,end} : null;
   let origin = [metadata.acquisition_origin,metadata.acquisition,metadata.origin].find(x => [...reused,...fresh].includes(x)) || "unknown";
@@ -770,8 +775,8 @@ function renderOverview(run) {
   for (const t of list(run.targets).slice(0, 4)) targetPanel.append(miniEntity(t, true));
   targetPanel.append(button("View targets & files →", () => navigate("targets")));
   const visibleCandidates = candidates.filter(c => candidateVisible(c, run));
-  candidatePanel.append(el("h2", "", "Therapeutic leads & specified-candidate assessments"));
-  if (!visibleCandidates.length) candidatePanel.append(el("p", "muted", list(run.candidate_assessments).some(row => !row.candidate_id) ? "The specified candidate has no unique entity link yet. Assessment cards retain the unresolved questions." : "No therapeutic or symptom-management leads are available this run. Other leads remain under Context molecules."));
+  candidatePanel.append(el("h2", "", "Therapeutic leads & assessment inputs"));
+  if (!visibleCandidates.length) candidatePanel.append(el("p", "muted", list(run.candidate_assessments).some(row => !row.candidate_id) ? "Assessment input: unique chemical identity pending. The assessment card records the remaining questions." : "No therapeutic or symptom-management leads are available this run. Other leads remain under Context molecules."));
   for (const c of visibleCandidates.slice(0, 4)) candidatePanel.append(miniEntity(c));
   candidatePanel.append(button("View research candidates →", () => navigate("candidates")));
   columns.append(targetPanel, candidatePanel); root.append(columns);
@@ -796,7 +801,7 @@ function renderOverview(run) {
     scope_notes: run.summary?.scope_notes || [], parent_run_id: run.parent_run_id, brief: run.brief})); root.append(exports);
 }
 
-// Only persisted data drives this workbench. No simulated agent states or invented event streams.
+// This workbench displays persisted role states and recorded event streams.
 function coData() {
   const value = state.selected?.co_scientist;
   return value && typeof value === "object" && !Array.isArray(value) ? value : null;
@@ -1321,7 +1326,7 @@ function renderCollaboration() {
   renderCollaborationSelection();
   const anchor = co.anchor || {}, anchorPanel = el("details", "panel anchor-panel"); anchorPanel.dataset.uiKey = "anchor";
   anchorPanel.append(el("summary", "", "Research boundaries & input summary"), facts([["Disease / phenotype", [anchor.disease, anchor.phenotype].filter(Boolean).join(" · ")],
-    ["Research species", anchor.species], ["Specified chassis", anchor.chassis_name], ["Conditions", systemText(anchor.condition)], ["Success criterion", systemText(anchor.success_criterion)]]));
+    ["Research species", anchor.species], ["Task chassis", anchor.chassis_name], ["Conditions", systemText(anchor.condition)], ["Success criterion", systemText(anchor.success_criterion)]]));
   add(anchorPanel, notifications(list(anchor.constraints).map(systemText), "Constraints & resources")); add(anchorPanel, notifications(list(anchor.non_goals).map(systemText), "Explicit non-goals"));
   const budget = publicBudget(co.budget), panel = el("details", "panel budget-summary"); panel.dataset.uiKey = "budget";
   panel.append(el("summary", "", "Budget & run status · model requests reserved " + text(budget.llm_calls) + " / HTTP " + text(budget.http_attempts) + " / tools " + text(budget.tool_calls)),
@@ -1490,11 +1495,11 @@ function latestHypotheses(hypotheses) {
 function hypothesisIdentity(hypothesis) {return text(hypothesis.hypothesis_id) + " · v" + text(hypothesis.version);}
 function chassisSnapshot(snapshot, chassisName) {
   const chassis = snapshot || {}, node = el("section", "chassis-snapshot"), top = el("div", "entity-top");
-  top.append(el("h3", "", "Chassis Snapshot · " + (chassisName || "Strain not specified")), badge(chassis.status || "unknown", chassis.status === "direct_evidence" && chassis.strain_match === "exact" ? "teal" : "amber"));
+  top.append(el("h3", "", "Chassis Snapshot · " + (chassisName || "Task strain pending")), badge(chassis.status || "unknown", chassis.status === "direct_evidence" && chassis.strain_match === "exact" ? "teal" : "amber"));
   node.append(top, facts([["Strain match", label(chassis.strain_match || "unknown")], ["Supply mode", label(chassis.mode || "unknown")]]),
     referenceLinks(chassis.evidence_ids, "Chassis evidence"));
   add(node, notifications(list(chassis.gaps).map(systemText), "Chassis production / exposure gaps"));
-  if (chassis.strain_match === "other_strain") node.append(el("p", "confirmation-note", "Evidence comes from another strain. Extrapolation to the specified strain still requires validation."));
+  if (chassis.strain_match === "other_strain") node.append(el("p", "confirmation-note", "Evidence strain: other strain. Applicability to the task strain: pending validation."));
   node.append(el("p", "confirmation-note", "This snapshot summarizes strain-specific evidence and production gaps. Yield measurements and ChassisGate results are recorded separately; missing evidence retains unknown status.")); return node;
 }
 function hypothesisCard(hypothesis, co) {
@@ -1519,7 +1524,7 @@ function hypothesisCard(hypothesis, co) {
   body.append(chassisSnapshot(hypothesis.chassis, hypothesis.chassis_name));
   const novelty = hypothesis.novelty || {}, noveltyNode = el("section", "hypothesis-section");
   noveltyNode.append(el("h3", "", "Closest prior work & unconfirmed differences"), badge(novelty.status || "insufficient_search", "outline"),
-    structured(novelty.difference || "Differences from prior work are not specified."), referenceLinks(novelty.closest_source_ids, "Closest related sources"),
+    structured(novelty.difference || "Comparison with prior work: pending."), referenceLinks(novelty.closest_source_ids, "Closest related sources"),
     el("p", "confirmation-note", "Search scope: " + text(novelty.search_scope) + ". Novelty assessment uses this recorded search scope and its gaps.")); body.append(noveltyNode);
   const prediction = el("section", "hypothesis-section"); prediction.append(el("h3", "", "Falsifiable prediction & next question"),
     structured(hypothesis.prediction), structured(hypothesis.validation_question)); body.append(prediction);
@@ -1583,7 +1588,7 @@ function renderContracts() {
     if (!list(contract.parameter_needs).length) parameters.append(el("p", "muted", "Parameter needs are awaiting records in this plan. Each parameter lists its units, source, measurement status and model input."));
     for (const parameter of list(contract.parameter_needs)) {
       const row = el("article", "parameter-card"); row.append(el("h4", "", parameter.variable || "Parameter name not recorded"),
-        facts([["Units", parameter.unit], ["Why needed", parameter.why_needed], ["Value", parameter.value == null ? "Measurement required · no value" : "Unverified input value: " + text(parameter.value)],
+        facts([["Units", parameter.unit], ["Why needed", parameter.why_needed], ["Value", parameter.value == null ? "Measurement required · value pending" : "Input value · verification pending: " + text(parameter.value)],
           ["Data class", parameter.data_class === "measurement_required" ? "Measurement required" : label(parameter.data_class)]]), referenceLinks(parameter.source_ids, "Parameter evidence"));
       if (parameter.value != null) row.append(callout("Parameter source: measurement unconfirmed. Calibration requires a traceable measurement record.", "amber")); parameters.append(row);
     }
@@ -1733,7 +1738,7 @@ function renderCandidates() {
     therapeutic.length ? "Try another keyword or research priority." : "Therapeutic candidates, biomarkers and risk signals are shown by research role. See Context molecules for other findings.", false));
   for (const candidate of filtered) $("candidateCards").append(candidateCard(candidate));
   for (const row of unresolved) {
-    const card = el("article", "entity-card"); card.append(entityHeading(row.name, "Specified candidate · no unique entity link yet", row.decision), assessmentDetails(row)); $("candidateCards").append(card);
+    const card = el("article", "entity-card"); card.append(entityHeading(row.name, "Assessment input · chemical identity pending", row.decision), assessmentDetails(row)); $("candidateCards").append(card);
   }
   const root = $("contextCards"); root.replaceChildren();
   const roles = ["biomarker", "risk_factor", "metabolic_context", "compound_class", "unknown"];
@@ -1834,13 +1839,13 @@ function renderPackages() {
         entry.append(el("h3", "", model.label), facts([
           ["Inputs", list(model.inputs).join(" + ")], ["Requirements", systemText(model.contract)],
           ["Recorded inputs", model.input_state === "recorded_ready_files_present" ? "Recorded ready; files present" : "Needs review / files missing"],
-          ["Next step", systemText(model.next_step)], ["Cache & execution", "Cache not checked · models not run by this checklist"],
+          ["Next step", systemText(model.next_step)], ["Cache & execution", "Checklist scope: file presence · Cache validation pending · Model execution: not_run"],
         ]));
         checklist.append(entry);
       }
       add(checklist, notifications(list(data.limitations).map(systemText), "Handoff boundaries"));
     }), checklist);
-    if (pkg.status !== "ready") card.append(callout("This input package is not admitted to full four-model computation. Existing files remain downloadable; review construct, sequence-scope and ligand checks below.", "amber"));
+    if (pkg.status !== "ready") card.append(callout("Input-package status: preparation required for four-model computation. Existing files are available; review construct, sequence-scope and ligand checks below.", "amber"));
     card.append(detail("Source, construct, pocket & model-readiness checks", {checks: pkg.checks, model_readiness: pkg.model_readiness, metadata: pkg.metadata}));
     root.append(card);
   }
@@ -1853,7 +1858,7 @@ function renderCompute() {
   const root = $("computeJobs"); root.replaceChildren();
   root.append(callout("The HDAC2 demo illustrates four-model inputs and scoring outputs using target-specific caches. Configuration, model preloading and scoring have separate states.", "amber"),
     button("Open HDAC2 workbench →", () => navigate("demo")));
-  if (!state.jobs.length) {root.append(empty("No compute jobs", "Once target inputs are ready, create a Target2Lead configuration. Actual computation cannot start before dependency checks pass.", false)); return;}
+  if (!state.jobs.length) {root.append(empty("No compute jobs", "Once target inputs are ready, create a Target2Lead configuration. Computation starts after dependency checks pass.", false)); return;}
   const project = state.project;
   for (const job of state.jobs) {
     const card = el("article", "panel"), heading = el("div", "compute-heading"), results = el("div");
@@ -1870,7 +1875,7 @@ function renderCompute() {
       results.replaceChildren(el("p", "loading-line", "Checking actual configuration, dependencies and compute resources…"));
       const data = await api(jobBase + "/preflight?until=" + enc(stage.value));
       if (project !== state.project) return;
-      results.replaceChildren(callout(data.ready ? "Preflight passed. The configuration is ready for an explicit compute submission." : "Execution requirements are not met. Supply the missing resources below.", data.ready ? "" : "amber"));
+      results.replaceChildren(callout(data.ready ? "Preflight passed. The configuration is ready to start computation." : "Preflight status: resources required. Complete the listed resources below.", data.ready ? "" : "amber"));
       const checks = el("ul", "check-list"); for (const check of data.checks || []) {const row = el("li"); row.append(el("span", check.ready ? "ok" : "missing", check.ready ? "✓" : "×"), el("span", "", check.name + " · " + (check.ready ? "Available" : "Missing") + (check.reason ? " · " + check.reason : ""))); checks.append(row);}
       results.append(checks, detail("Full preflight record", data));
     }), button("Execute job", async () => {
@@ -1933,12 +1938,12 @@ function selectedBackgroundPackage(mode, value) {
 function applyTaskIntent(brief, intent) {
   if (!["legacy", "disease_exploration", "candidate_assessment"].includes(intent)) throw new Error("Choose a task intent.");
   const result = {...brief, task_intent:intent};
-  if (intent === "candidate_assessment" && !list(result.existing_candidates).length) throw new Error("Enter a candidate name for a specified-candidate assessment.");
+  if (intent === "candidate_assessment" && !list(result.existing_candidates).length) throw new Error("Enter a candidate name for candidate assessment.");
   if (intent !== "disease_exploration") return result;
   const fields = ["existing_candidates", "background_package_id", "target_hints", "delivery_context", "conditions", "engineering_allowed", "assumptions", "experiment_ids", "target_packages", "allowed_precursors", "experimental_capabilities", "continue_saved_hypotheses"];
   const present = value => Array.isArray(value) ? value.length > 0 : Boolean(value);
   if (fields.some(key => present(result[key])) || (result.chassis_name && result.chassis_name !== "Lactiplantibacillus plantarum WCFS1")) {
-    throw new Error("Disease exploration cannot include candidates, background packages, target hints or engineering context. Clear those fields or choose research with existing context.");
+    throw new Error("Disease exploration starts from the disease question with empty candidate, background-package, target-hint and engineering fields. Use research with existing context for those inputs.");
   }
   return {...result, chassis_name:"", chassis_id:"", reference_chassis:""};
 }
@@ -1985,7 +1990,7 @@ async function prepareTarget(event) {
   event.preventDefault(); const node = $("prepareTarget"), project = state.project, run = state.run;
   node.disabled = true;
   try {
-    notify("Retrieving actual structure, sequence and bound reference ligand. Input packages that fail checks will not be admitted automatically.");
+    notify("Retrieving actual structure, sequence and bound reference ligand. Input packages enter computation after their checks pass.");
     const request = {uniprot_id: $("targetUniProt").value.trim(), pdb_id: $("targetPDB").value.trim(),
       protein_chain: $("targetChain").value.trim(), ligand_id: $("targetLigand").value.trim(),
       ligand_chain: $("ligandChain").value.trim(), ligand_residue: $("ligandResidue").value.trim(),

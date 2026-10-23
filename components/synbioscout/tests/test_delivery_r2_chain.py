@@ -2,7 +2,7 @@
 
 The public-sized fixture reads only the two explicitly named public input files
 and the normal frozen background package. Model outputs are transparent stubs,
-not a new scientific evaluation; no network/process/inference files are read.
+an offline software evaluation using local synthetic fixtures.
 """
 from __future__ import annotations
 
@@ -185,7 +185,7 @@ class AssessmentController:
                 "questions": ["SYNTHETIC what remains unmeasured?"], "success_criterion": "SYNTHETIC source-limited assessment"}
         if title == "SynthesisDraft":
             # The review index is supplied to the independent reviewer as
-            # background. It is not a sixth independent intervention trial.
+            # background, counted separately from the five independent intervention trials.
             candidate_rows = [row for row in self.rows if row["source_id"] != "pmid:32900213"]
             negative_only = all(row["polarity"] == "opposes" for row in candidate_rows)
             observation_summary = ("The reported sources contain no supported benefit on their measured endpoints."

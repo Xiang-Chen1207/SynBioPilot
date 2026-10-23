@@ -52,7 +52,7 @@ def workbench(tmp_path):
     target = directory / "target"
     target.mkdir()
     pdb = target / "protein.pdb"
-    pdb.write_text("SYNTHETIC fixture content; not a real protein")
+    pdb.write_text("SYNTHETIC protein-file fixture")
     secret = directory / ".env"
     secret.write_text("FIXTURE_TOKEN=never-export-this")
     (directory / "inference").mkdir()

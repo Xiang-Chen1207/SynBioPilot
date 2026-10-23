@@ -451,6 +451,6 @@ def test_retrieved_records_without_text_fail_synthesis_as_partial(tmp_path):
     assert result.status == ExecutionStatus.PARTIAL
     assert result.evidence == result.targets == result.candidates == []
     assert llm.calls == 1
-    assert any("No source text retrieved" in error for error in result.errors)
+    assert any("Source retrieval is empty" in error for error in result.errors)
     assert next(step for step in result.steps if step.step_id == "synthesize").status == "failed"
 

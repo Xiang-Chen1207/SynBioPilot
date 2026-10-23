@@ -429,7 +429,7 @@ check("current entity references preserve historical gaps without revising scien
   assert.doesNotMatch(JSON.stringify(ref),/PRIVATE_|raw_prompt/);
 });
 
-check("specified hold candidates remain visible and preserve mixed evidence scope", () => {
+check("assessment-input candidates on hold remain visible and preserve mixed evidence scope", () => {
   const candidate = {candidate_id:"synthetic_held",name:"SYNTHETIC compound",role:"unknown",decision:"hold"};
   const run = {candidate_assessments:[{candidate_id:candidate.candidate_id, origin:"user_supplied",scientific_status:"needs_evidence"}]};
   assert.equal(ui.candidateVisible(candidate, run), true);
@@ -496,7 +496,7 @@ check("user full-name declarations remain separate from official aliases in publ
   assert.doesNotMatch(JSON.stringify(ref),/PRIVATE_|raw_prompt|UNVERIFIED/);
 });
 
-check("saved full text excerpts and source reuse counts cannot imply fresh full text reading", () => {
+check("saved full text excerpts and reuse counts retain their acquisition scope", () => {
   assert.match(ui.sourceScopeLabel({evidence_scope:"full_text",metadata:{local_excerpt_only:true}}),/saved contiguous excerpt.*Acquisition not recorded.*excerpt scope/);
   assert.equal(ui.sourceScopeLabel({evidence_scope:"abstract"}),"Abstract only");
   const flow = normalize(ui.publicResearchFlow({library_status:[{library:"SYNTHETIC background",reused_records:7,
@@ -520,7 +520,7 @@ check("full text original window and acquisition facts stay distinct in source l
   assert.doesNotMatch(JSON.stringify(scope),/PRIVATE_|raw_prompt/);
 });
 
-check("claim relation public fields remain scoped while legacy null does not become support", () => {
+check("claim relation public fields retain scope and legacy-null status", () => {
   const relation = {schema_version:2,claim_id:"c_synthetic",hypothesis_id:"h_synthetic",version:1,evidence_id:"ev_synthetic",
     source_id:"s_synthetic",entity_id:"entity_synthetic",relation:"supports",study_system:"SYNTHETIC cells",condition:"SYNTHETIC condition",endpoint:"SYNTHETIC endpoint",raw_prompt:"PRIVATE_SENTINEL"};
   const flow = normalize(ui.publicResearchFlow({claims:[{claim_id:"c_synthetic",relation_schema_version:2,assessment_scope:"source_observation"}],

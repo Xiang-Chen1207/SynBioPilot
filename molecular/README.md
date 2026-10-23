@@ -38,7 +38,7 @@ python3 molecular/docking/analyze_docking.py
 
 Analysis also needs openpyxl. It exports contact, geometry, pose-consistency and
 score tables. The optional 3D viewer refers to the original project's 3Dmol assets;
-the numerical tables do not depend on the viewer.
+the numerical tables are generated independently of the viewer.
 
 ## Four-run MD analysis
 

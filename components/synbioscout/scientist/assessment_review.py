@@ -1,9 +1,9 @@
 """Pure binding and validation for the independent candidate conclusion review.
 
-This is a bounded source-level assessment, not general natural-language
-entailment or a therapeutic classifier. Exact accepted findings, explicit scope,
+This module performs bounded source-level assessment; general language
+entailment and therapeutic classification are separate tasks. Exact accepted findings, explicit scope,
 finite extrapolation guards and a separate model review are all required. The
-reviewer cannot waive a failed deterministic guard. No model or I/O lives here.
+reviewer accepts only after deterministic guards pass. Model calls and I/O live in the controller.
 """
 from __future__ import annotations
 
@@ -22,17 +22,17 @@ from .store import digest
 BINDING_FIELDS = ("assessment_id", "version", "candidate_id", "entity_id", "identity_revision",
                   "identity_fingerprint", "task_fingerprint", "conclusion_fingerprint", "evidence_fingerprint")
 ASSESSMENT_INSTRUCTIONS = (
-    "Independently review each explicit candidate conclusion and every finding, not only quotation or molecular role. "
+    "Independently review each explicit candidate conclusion and every finding, including quotation and molecular role. "
     "Echo all binding fields unchanged. Use a new unique review_id; exactly one review per assessment and one item_review "
     "per finding with its exact evidence_ids and applicability. Accept only if the conclusion is a faithful limited synthesis of those "
     "findings and every item is supported within its original study_system, condition and endpoint. Review all accepted "
     "evidence and original source windows, including mixed/opposes and evidence omitted by the proposal. Missing material "
-    "counterevidence requires revise or withhold. Never turn source acceptance into candidate efficacy, a symptom endpoint "
-    "into core disease benefit, an adjunct into monotherapy, an animal/cell result into a human effect, or an administered "
-    "compound into chassis production/delivery/exposure. Unknowns and next_questions must explain remaining applicability "
-    "limits. A mixed/negative/needs_evidence conclusion may be accepted as a completed assessment; completion is not "
-    "therapeutic support. Do not rewrite conclusions or invent findings in this review. Nonempty deterministic_errors "
-    "cannot be waived by an accept verdict. Copy supporting_evidence_ids and opposing_evidence_ids exactly, retaining mixed "
+    "counterevidence requires revise or withhold. Keep source acceptance, candidate efficacy, symptom endpoints and core-disease benefit separate; preserve "
+    "adjunct/monotherapy and animal/cell/human study scopes. Distinguish an administered "
+    "compound from chassis production/delivery/exposure. Unknowns and next_questions must explain remaining applicability "
+    "limits. A mixed/negative/needs_evidence conclusion may be accepted as a completed assessment; completion status is separate from "
+    "therapeutic support. Review the supplied conclusions and findings as written. Nonempty deterministic_errors "
+    "require resolution before an accept verdict. Copy supporting_evidence_ids and opposing_evidence_ids exactly, retaining mixed "
     "in both. Source-level findings are copied accepted claims or complete exact source-observation wrappers."
 )
 
@@ -81,8 +81,8 @@ def _identity_labels(run):
 def _name_mentions(text, labels):
     mentions = [{**entry, "start": match.start(), "end": match.end()}
                 for entry in labels for match in re.finditer(_label_pattern(entry["label"]), text, re.IGNORECASE)]
-    # An explicitly named salt/longer chemical name is not a separate mention of
-    # every shorter name contained inside it. Equal spans keep all competitors.
+    # Prefer the complete salt/chemical-name span over contained shorter names.
+    # Equal spans keep all competing identities.
     return [mention for mention in mentions if not any(
         other["start"] <= mention["start"] and other["end"] >= mention["end"]
         and other["end"] - other["start"] > mention["end"] - mention["start"] for other in mentions)]
@@ -107,12 +107,12 @@ def _identifier_mentions(run, text):
 
 
 def _definition_markers(source, code):
-    """Explicit code definitions only; sample-size parentheses are not names."""
+    """Extract explicit code definitions; handle sample-size parentheses as counts."""
     code_pattern = _label_pattern(code)
     verbal = False
     for match in re.finditer(code_pattern + r"\s*(=|means\b|denotes\b|refers to\b|stands for\b|代表|意为)", source.text, re.IGNORECASE):
-        # '(NAC = 16, placebo = 15)' reports group sizes, not a chemical
-        # identity definition. A textual/identifier assignment remains unknown.
+        # '(NAC = 16, placebo = 15)' reports group sizes. Chemical identity uses
+        # explicit name definitions; textual/identifier assignments remain unknown.
         if match[1] == "=" and re.match(r"\s*\d+(?:\.\d+)?\s*(?=[,;.)])", source.text[match.end():]):
             continue
         verbal = True
@@ -123,11 +123,11 @@ def _definition_markers(source, code):
 
 
 def _explicit_definition(source, quote_start, quote_end, mention, labels, *, require_local=True):
-    """A finite, local source definition, not title/claim/metadata inference.
+    """Resolve finite, local definitions in source text; titles, claims and metadata retain separate roles.
 
     Only exact Full name (code) / code (Full name) mappings are recognized. Any
     conflicting or unrecognized explicit code definition in this source makes
-    a shared code unresolved. Distant definitions cannot license this quote.
+    a shared code unresolved. This quote uses definitions within its local context.
     """
     code = mention["label"]
     definitions = []
@@ -157,7 +157,7 @@ def _explicit_definition(source, quote_start, quote_end, mention, labels, *, req
     local = [d for d in definitions if d["start"] >= max(0, quote_start - 240) and d["end"] <= quote_end]
     if len(entities) != 1 or not local:
         return None
-    # Do not cross a paragraph or an intervening background/context section.
+    # Keep the definition within its paragraph and research-context section.
     local = [d for d in local if "\n\n" not in source.text[d["end"]:quote_start] and not re.search(
         r"\b(?:background|previous|prior|unrelated)\b|背景|既往", source.text[d["end"]:quote_start], re.IGNORECASE)]
     if not local:
@@ -340,13 +340,13 @@ def _prose_errors(text, *, human_scope):
     errors = []
     text = ".".join(sentence for sentence in re.split(r"[.;；。!?！？\n]", text)
                     if not _terminal_limitation(sentence))
-    # Contrast clauses are checked independently: an earlier 'not' must not
-    # license a later positive clinical extrapolation.
+    # Check each contrast clause independently, preserving the scope of its negation
+    # and any later positive clinical assertion.
     for clause in re.split(r"[.,;，；。!?！？\n]|\b(?:but|however|whereas|and|although|despite)\b|但|然而", text):
         if not clause.strip():
             continue
         # 'not only' is affirmative; a negator after the effect ('cures without
-        # risk') does not negate that effect. This finite check is deliberately
+        # risk') leaves that effect affirmative. This finite check is deliberately
         # conservative, while the separate reviewer must judge the actual prose.
         clause = re.sub(r"\bnot only\b", "", clause, flags=re.IGNORECASE)
         effects = [m for pattern in (_RISKY, _BENEFIT, _ASSERTION) for m in pattern.finditer(clause)]
@@ -358,7 +358,7 @@ def _prose_errors(text, *, human_scope):
         elif _BENEFIT.search(clause) and not _SOURCE_BOUND.search(clause):
             errors.append("Benefit statement must remain explicitly within its reported source scope")
         if not human_scope and _CLINICAL.search(clause) and (_BENEFIT.search(clause) or _ASSERTION.search(clause)):
-            errors.append("Nonhuman or unknown source scope cannot establish human clinical applicability")
+            errors.append("Human clinical applicability requires a matching human study scope; source scope is nonhuman or unknown")
     return errors
 
 
@@ -377,12 +377,12 @@ def _scope_errors(evidence, source):
     if declared and actual and declared.isdisjoint(actual) and not (
             "nonhuman" in declared and actual.issubset(nonhuman)):
         return ["Declared study scope conflicts with the source's current study objects"]
-    # These are conflict detectors, not automatic positive applicability claims.
+    # These checks detect conflicts; positive applicability requires a separate assessment.
     source_text = (source.title + " " + source.text).casefold()
     scope_text = (evidence.condition + " " + evidence.endpoint).casefold()
     if re.search(r"\b(?:adjunct\w*|add-on|add on|co-administered)\b|辅助|联合", source_text) and re.search(
             r"\b(?:monotherapy|standalone|alone)\b|单药|独立治疗", scope_text):
-        return ["Adjunctive source cannot establish a monotherapy scope"]
+        return ["Monotherapy scope requires monotherapy evidence; this source reports adjunctive treatment"]
     if re.search(r"\bcore (?:symptoms?|features?)\b|核心症状", scope_text) and not re.search(
             r"\bcore (?:symptoms?|features?)\b|核心症状", evidence.quote.casefold()):
         return ["Core endpoint is not present in the quoted observation"]
@@ -395,11 +395,11 @@ def _scope_annotation(evidence, source):
     actual, unresolved = observation_study_objects(source.text)
     if declared == {"human"}:
         if actual == {"human"} and not unresolved:
-            return "source_scope_only", ["Reported study population and endpoints only; no individual prediction or clinical recommendation."]
+            return "source_scope_only", ["Applicability covers the reported study population and endpoints; individual prediction and clinical recommendation require separate assessment."]
         return "population_uncertain", [
             "The exact source observation is retained; human study-population applicability is unresolved within this source window."]
     return "nonhuman_or_unknown", [
-        "Nonhuman or unknown study system is retained as source background; it cannot establish a human clinical effect."]
+        "Source background: nonhuman or unknown study system. Human clinical-effect support requires matching human intervention evidence."]
 
 
 def _finding_annotation(run, candidate, finding):
@@ -454,16 +454,16 @@ def _content_errors(run, candidate, record):
             elif finding.statement == evidence.claim:
                 errors.extend(_prose_errors(finding.statement, human_scope=human_scope))
             if applicability == "population_uncertain" and finding.statement != source_observation_statement(evidence.source_id, evidence.quote):
-                errors.append("Uncertain population requires the complete exact source observation, not a population paraphrase")
+                errors.append("Uncertain population requires the complete verbatim source observation")
             errors.extend(_scope_errors(evidence, source))
     if covered != set(ids):
-        errors.append("Proposal findings do not cover the full candidate evidence set, including counterevidence")
+        errors.append("Proposal findings require coverage of the full candidate evidence set, including counterevidence")
     if opposition and support and content.scientific_status not in {"mixed_evidence", "needs_evidence"}:
         errors.append("Mixed supporting/opposing evidence requires a mixed or unresolved conclusion")
     if not support and content.scientific_status not in {"no_supported_benefit", "needs_evidence"}:
         errors.append("No accepted positive finding supports the proposed scientific status")
     if not support and not opposition and content.scientific_status != "needs_evidence":
-        errors.append("Context evidence cannot establish an intervention conclusion")
+        errors.append("Intervention conclusions require intervention evidence; this record has context scope")
     if any(f.applicability == "population_uncertain" for f in content.findings) and content.scientific_status not in {"mixed_evidence", "needs_evidence"}:
         errors.append("Uncertain population requires a mixed or unresolved overall assessment")
     # Prose review remains independent. These conservative finite guards block
@@ -621,7 +621,7 @@ def apply_assessment_review(run, draft, *, operation_id=""):
     pending = [r for r in run.candidate_evaluations if r.status == "ready_for_review" and not r.reviews]
     for review in draft.reviews:
         # Retain wrong-version attempts on the uniquely identified assessment;
-        # they cannot be silently overwritten by a later accepted receipt.
+        # later accepted receipts are recorded alongside them.
         matches = [r for r in run.candidate_evaluations if r.assessment_id == review.assessment_id and r.version == review.version]
         if not matches:
             matches = [r for r in run.candidate_evaluations if r.assessment_id == review.assessment_id]

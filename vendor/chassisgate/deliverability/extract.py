@@ -49,15 +49,15 @@ def build_messages(
     )
     reasoning_instruction = (
         "Literature-only mode: use ONLY the retrieved records below. Every informative evidence "
-        "object must cite a PMID present in those records. Do not use uncited background knowledge. "
-        "If the records do not establish the chassis-conditioned claim, use relation_type=not_reported, "
-        "raw_confidence=0, and do not infer a negative from literature silence.\n"
+        "object must cite a PMID present in those records. Use the supplied records as the evidence source. "
+        "When chassis-conditioned support is missing, use relation_type=not_reported, "
+        "raw_confidence=0, and retain missing-report status separately from negative evidence.\n"
         if literature_only
         else
         "Reasoning: use BOTH the retrieved literature AND your biochemical knowledge of the organism's "
-        "known metabolism. Do NOT default to non_native when evidence is sparse — if the organism is well "
+        "known metabolism. Assign non_native only with matching pathway evidence — if the organism is well "
         "established to natively produce the molecule, answer denovo (or biotransform). Reserve non_native "
-        "for molecules the chassis genuinely cannot make.\n"
+        "for molecules with evidence that their pathway is absent from the chassis.\n"
     )
     system = (
         "You assess chassis-conditioned microbial deliverability: can the given chassis "
@@ -68,14 +68,14 @@ def build_messages(
         "central metabolism / standard medium, using enzymes encoded in its OWN genome (e.g. a central "
         "fermentation product of that organism).\n"
         "- semantic_source=biotransform: the chassis NATIVELY has the enzyme(s) to convert an externally "
-        "supplied precursor into the molecule, but cannot make it de novo.\n"
-        "- semantic_source=non_native: the chassis does NOT encode the pathway; the molecule is made by "
+        "supplied precursor into the molecule; de novo synthesis is unavailable.\n"
+        "- semantic_source=non_native: the pathway is absent from the chassis; the molecule is made by "
         "other taxa or needs enzymes the chassis lacks.\n"
         "- engineering_required=true ONLY if obtaining the molecule would require introducing a NEW "
         "heterologous enzyme/pathway absent from the chassis. If the chassis natively makes it, false.\n"
         + reasoning_instruction
         + "Express genuine uncertainty with a LOW "
-        "raw_confidence, NOT by forcing non_native.\n"
+        "raw_confidence; semantic_source follows the pathway evidence.\n"
         "Return only one valid JSON object with keys: semantic_source, precursor_available, "
         "engineering_required, raw_confidence, evidence. "
         "semantic_source in denovo, biotransform, non_native. "
@@ -86,7 +86,7 @@ def build_messages(
         f"provenance_strength must be one of {provenance_values}. "
         "support_score must be a number from 0 to 1. "
         f"Example evidence object: {evidence_example}. "
-        "Do not invent citations or evidence."
+        "Report verifiable citations and evidence with their provenance."
     )
     if retrieved_snippets:
         evidence_text = "\n".join(f"- {snippet}" for snippet in retrieved_snippets)

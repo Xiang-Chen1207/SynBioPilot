@@ -31,7 +31,7 @@ const descendants = node => [node,...node.children.flatMap(descendants)];
 let checks=0;
 function check(name, fn) {fn();checks++;console.log("PASS "+name);}
 
-check("terminal roles preserve recorded state but cannot look active",()=>{
+check("terminal roles display their recorded terminal state",()=>{
   for(const status of ["completed","partial","failed","cancelled"]) {
     const agent={status:"running"}, node=ui.roleRecordStatus(agent,{status});
     assert.match(node.textContent,/Last recorded/);assert.equal(node.className,"status-badge historical");
@@ -46,7 +46,7 @@ check("call return and role completion are separately labelled",()=>{
   assert.equal(ui.recordedStatus({status:"completed"}).textContent,"Role completed");
   assert.equal(ui.recordedStatus({kind:"llm",operation_status:"running"}).className,"status-badge historical");
 });
-check("a final optional skip cannot claim the whole role never executed",()=>{
+check("an optional skip preserves earlier role execution",()=>{
   for (const invocations of [0,2]) {
     const agent={status:"skipped",invocations};
     const before=JSON.stringify(agent);
@@ -72,7 +72,7 @@ check("role history contains every saved event in sequence without changing the 
   assert.match(nodes.agentNodeDetail.textContent,/Model \/ tool calls · 2 linkable records/);
   assert.equal(JSON.stringify(run),before);
 });
-check("missing role history does not acquire invented steps or output",()=>{
+check("missing role history retains its pending-record state",()=>{
   const run=structuredClone(completed);run.co_scientist.events=[];
   ui.state.selected=run;ui.state.agent="generation";ui.renderCollaborationSelection();
   assert.match(nodes.agentNodeDetail.textContent,/No public events were saved/);
@@ -86,7 +86,7 @@ check("new history surface keeps diagnostic strings out of visible and collapsed
   assert.doesNotMatch(nodes.agentNodeDetail.textContent,/SYNTHETIC_SECRET/);
   assert.match(nodes.agentNodeDetail.textContent,/not public in this workbench/);
 });
-check("partial run with no reviewed evaluation cannot imply scientific completion",()=>{
+check("partial runs display the actual evaluation stage and completion state",()=>{
   const run=r3.runs.find(r=>r.presentation.fixture.case==="single_call");ui.state.selected=run;ui.renderOverview(run);
   assert.match(nodes.overviewContent.textContent,/No independently reviewed candidate conclusions/);
   assert.match(nodes.overviewContent.textContent,/This run is partial/);

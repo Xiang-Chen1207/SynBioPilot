@@ -12,7 +12,7 @@
 
 ## Candidate-selection audit
 
-Candidate inputs start empty. The intake prompt preserves user-supplied candidate names; disease exploration identifies candidates through current research sources. Candidate-assessment admission requires a user-supplied candidate list; it does not restrict which name is accepted. Disease exploration rejects candidate-specific background inputs and starts with its own searches.
+Candidate inputs start empty. The intake prompt preserves candidate-assessment inputs; disease exploration identifies candidates through current research sources. Candidate-assessment admission accepts any candidate name in the input list. Disease exploration rejects candidate-specific background inputs and starts with its own searches.
 
 New offline tests cover confirmed API submission for caffeine, resveratrol, NAC and SFN; disease-only input; explicit candidate exclusions; blank UI fields; and first-start configuration. These tests evaluate software contracts using fixed parser responses; live-model biomedical evaluation uses its own datasets.
 

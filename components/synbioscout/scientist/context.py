@@ -54,7 +54,7 @@ def accepted_evidence_index(evidence, *, linked_evidence_ids=(), claim_applicabi
 
 
 def background_windows(text):
-    """Quoted task constraints, not a generated scientific summary.
+    """Task constraints preserved as exact input quotations.
 
     Long user documents remain local. Preserve explicit constraint/assay lines
     with adjacent context, and signal omitted material rather than infer it.

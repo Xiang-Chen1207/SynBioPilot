@@ -9,8 +9,8 @@ from .store import digest
 THERAPEUTIC_ROLES = frozenset({"therapeutic_candidate", "symptom_management"})
 CONTEXT_ROLES = frozenset({"biomarker", "risk_factor", "metabolic_context", "compound_class"})
 
-# These are explicit role descriptions, not drug/disease name lookups. A historical
-# classification is only a display hint; it does not constitute reviewed intervention evidence.
+# Role matching uses explicit role descriptions. A historical
+# classification supplies display hints; intervention support uses reviewed evidence.
 _ROLE_PATTERNS = {
     "compound_class": (
         r"\b(?:class|family|group) of (?:compounds|molecules|metabolites)\b|"
@@ -53,8 +53,8 @@ _ROLE_PATTERNS = {
 def _described_roles(text):
     text = normalized(text).casefold()
     roles = {role for role, pattern in _ROLE_PATTERNS.items() if re.search(pattern, text)}
-    # A trial description cannot turn a sentence explicitly denying therapeutic identity
-    # into a therapy classification. Such text may still support a non-therapeutic role.
+    # An explicit denial of therapeutic identity retains that meaning in a trial
+    # description. Such text may still support a non-therapeutic role.
     if re.search(r"\bnot (?:a |an )?(?:therapeutic candidate|treatment|therapy)\b|"
                  r"(?:不是|非|不能视为|不能作为).{0,8}(?:治疗候选|治疗药物|治疗分子|候选药物)", text):
         roles.discard("therapeutic_candidate")
@@ -128,7 +128,7 @@ def validate_evidence(items, sources: list[SourceRecord]):
             accepted.append(record)
         except ValueError as exc:
             rejected.append({"input": item, "reason": str(exc)})
-    # An exact quotation verifies provenance; it does NOT itself prove entailment or causality.
+    # An exact quotation verifies provenance; entailment and causality require their corresponding assessments.
     unique = {r.evidence_id: r for r in accepted}
     return list(unique.values()), rejected
 
@@ -157,7 +157,7 @@ def decide_candidates(candidates: list[CandidateRecord], evidence: list[Evidence
             reasons.append("Chemical identity needs resolution")
         elif "literature" in candidate.routes and not records:
             candidate.decision = "hold"
-            reasons.append("Literature claim review did not pass; retain draft for audit, not recommendation")
+            reasons.append("Accepted literature evidence: 0; retain the draft and its review status")
         elif records and any(e.polarity == "opposes" for e in records) and not any(e.polarity == "supports" for e in records):
             candidate.decision = "hold"
             reasons.append("Attached evidence opposes the recorded design endpoint within its source conditions")
@@ -166,7 +166,7 @@ def decide_candidates(candidates: list[CandidateRecord], evidence: list[Evidence
             reasons.append("ADMET execution failed; biological interpretation awaits a valid result")
         elif candidate.admet.get("selection_pass") is False:
             candidate.decision = "hold"
-            reasons.append("ADMET does not satisfy the explicitly configured selection bounds")
+            reasons.append("ADMET selection status: outside the configured bounds")
         elif candidate.gate.get("gate_status") == "failed":
             candidate.decision = "hold"
             reasons.append("Gate execution failed; chassis interpretation awaits a valid result")
@@ -208,7 +208,7 @@ def decide_candidates(candidates: list[CandidateRecord], evidence: list[Evidence
                 reasons.append("Chemical identity updated; priority retained pending new reviewed evidence or assessment")
             else:
                 # A new accepted evidence/compute assessment may be interpreted
-                # normally. Unreviewed tool observations cannot release this guard.
+                # normally. This guard requires reviewed evidence to be released.
                 candidate.identity_assessment_pending = False
         candidate.decision_reasons = reasons
     return candidates

@@ -1,6 +1,6 @@
 """Versioned, independently reviewed candidate conclusions (not efficacy scores).
 
-These contracts deliberately do not reuse CandidateRecord.rationale or the
+These contracts define their own reviewed content, separately from CandidateRecord.rationale and the
 quote/role review. A final is a copy of an explicit model proposal, only after
 the separate conclusion review and deterministic binding checks succeed.
 """

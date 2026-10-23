@@ -7,7 +7,7 @@
 - Node.js for the frontend contract tests; the frontend itself needs no npm build.
 - For live research only: an authorized supported model backend and network access to the selected literature/database services.
 
-The install specification uses dependency ranges. This source bundle does not include the standalone release validation JSON or a universal lockfile. Source the root SynBioPilot runtime script before installation to keep caches in the checkout.
+The install specification uses dependency ranges. The standalone release validation JSON and a universal lockfile are external to this source bundle. Source the root SynBioPilot runtime script before installation to keep caches in the checkout.
 
 ## Install from this directory
 

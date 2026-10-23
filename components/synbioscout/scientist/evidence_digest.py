@@ -87,7 +87,7 @@ def _intervention_mode(condition):
 
 def _accepted(run):
     sources = {s.source_id:s for s in run.sources}
-    # Summarize persisted acceptance, not a second semantic adjudication. Public
+    # Summarize the persisted semantic-acceptance result. Public
     # views intentionally omit database source bodies; that must not silently
     # erase an already accepted contrary citation from the digest.
     return [e for e in run.evidence if e.validated_span and e.source_id in sources
@@ -137,8 +137,8 @@ def build_evidence_digest(run, reference_sources=()):
         for e in accepted:
             if e.source_id not in source_ids:
                 continue
-            # Exact declared aliases are a mention check, not a treatment-effect
-            # attribution. Formal claim review still decides whether it supports.
+            # Exact declared aliases establish entity mentions. Formal claim
+            # review determines treatment-effect support.
             entities = [c for c in run.candidates if names_in_quote(c, e.quote)]
             unique = [c for c in entities if all(len(matching_candidates(run.candidates,[name])) == 1
                 for name in candidate_names(c) if name and _norm(name) in _norm(e.quote))]

@@ -135,7 +135,7 @@ def export_document(run: ResearchRun):
         source["metadata"].setdefault("retrieved_text_sha256", hashlib.sha256(text.encode()).hexdigest())
         source["metadata"]["export_text_included"] = False
         # Canonical scope describes the document actually exported. A checked
-        # local window cannot be reasserted after its validating text is removed.
+        # local window remains null after its validating text is removed.
         source["metadata"]["source_scope"] = source_scope_view(source)
     if document.get("co_scientist"):
         for result in document["co_scientist"]["tool_calls"]:
@@ -149,8 +149,8 @@ def export_document(run: ResearchRun):
                     source["metadata"]["source_scope"] = source_scope_view(source)
     document["presentation"]["source_text_export"] = (
         "Original retrieved text remains local; source bodies are omitted from this export, "
-        "while citations and evidence excerpts are included. Without the source body, its original "
-        "window cannot be verified within this export, so canonical original_window is null. "
+        "while citations and evidence excerpts are included. Window verification requires the original "
+        "source text; canonical original_window is null in this export. "
         "CSV and Markdown computed from source objects that still contain the original text may "
         "retain verified windows."
     )

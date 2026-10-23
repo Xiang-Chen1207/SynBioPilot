@@ -126,7 +126,7 @@ def test_no_primary_or_contrary_hit_records_gap_without_asserting_nonexistence()
     gaps = run.sources[0].metadata["coverage_gaps"]
     assert "no_retrieved_relevant_primary_trial" in gaps
     assert "no_retrieved_relevant_contrary_or_mixed_result" in gaps
-    assert any("absence is not evidence of nonexistence" in w for w in run.warnings)
+    assert any("retrieval scope and uncovered ranges are recorded" in w for w in run.warnings)
 
 
 @pytest.mark.parametrize("error,gap", [(TimeoutError("SYNTHETIC timeout"), "full_text_stopped_by_deadline"),

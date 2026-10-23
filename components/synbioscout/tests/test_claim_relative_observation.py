@@ -61,7 +61,7 @@ def test_exact_source_observation_can_be_supported_without_changing_global_polar
     assert main.state == "supported"
     assert flow.main_review_state(h) == "source_observation_supported"
     assert not flow.main_reviewed(h)
-    assert "窄原文观察" in flow.main_review_gap(h) and "尚未" in flow.main_review_gap(h)
+    assert "窄原文观察" in flow.main_review_gap(h) and "各自需要支持证据" in flow.main_review_gap(h)
     assert e.model_dump() == before
     assert flow.verify()["valid"]
     link = next(link for link in flow.data.links if link.claim_id == main.claim_id)

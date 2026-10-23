@@ -2,7 +2,7 @@
 
 The caller supplies only an explicitly enabled, manifest-checked background table.
 Public identity documents are verified again against their exact structure and name
-query. Network fallback shares the run ledger but does not spend LLM input bytes.
+query. Network fallback uses the run ledger's HTTP allowance; its LLM input-byte usage is zero.
 """
 from __future__ import annotations
 
@@ -82,7 +82,7 @@ def verified_background_identity(row):
 
 
 def ensure_specified_candidates(run):
-    """Keep each user supplied chemical assessable when synthesis omits it."""
+    """Prepare identity records for every candidate-assessment input, including names awaiting synthesis."""
     if run.status not in {ExecutionStatus.QUEUED, ExecutionStatus.RUNNING}:
         return []
     declarations = []
@@ -221,10 +221,10 @@ def reuse_prepared_candidates(run, prepared):
 def prepare_core_identities(engine, identity_records=(), *, local_only=False):
     """Prepare names before Generation, within four queries/HTTPs and 60 seconds.
 
-    These are upper shares of existing allowances, not added budgets. HTTP retry
-    attempts also consume the share. Time for critical review is protected; a
-    large serialized review estimate cannot incorrectly block zero-byte identity
-    work. Explicit conflicts/ambiguities stop that candidate's automatic lookup.
+    These upper shares are reserved within the existing allowances. HTTP retry
+    attempts also consume the share. Time for critical review is protected.
+    Zero-byte identity preparation remains eligible independently of the
+    serialized review estimate. Explicit conflicts/ambiguities stop that candidate's automatic lookup.
     """
     run, ledger, sync = engine.run, engine.ledger, engine.identity_sync
     if run.status not in {ExecutionStatus.QUEUED, ExecutionStatus.RUNNING}:
@@ -251,7 +251,7 @@ def prepare_core_identities(engine, identity_records=(), *, local_only=False):
     tool_share = min(4, max(1, run.brief.budget.max_tool_calls // 3)) if run.brief.budget.max_tool_calls else 0
     http_share = min(4, max(1, run.brief.budget.max_http_requests // 4))
     # critical_reserve is task-aware: explicit candidate assessment protects
-    # its independent conclusion review, not an unselected hypothesis/Meta chain.
+    # its independent conclusion review; hypothesis/Meta expansion has its own selection.
     reserve_seconds = engine.critical_reserve().get("seconds", 0)
     core_deadline = min(time.monotonic() + 60, ledger.deadline - reserve_seconds)
     http = getattr(engine.sources, "http", None)
@@ -350,7 +350,7 @@ def prepare_core_identities(engine, identity_records=(), *, local_only=False):
                     _mark(candidate, run, "invalid_background_identity")
                     continue
             if local_only:
-                # Absence of a verifiable local record is not a completed
+                # A verifiable local record is required to record a completed
                 # attempt: the normal bounded path remains available later.
                 continue
             aliases = declared_aliases(candidate.name)

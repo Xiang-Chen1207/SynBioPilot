@@ -109,7 +109,7 @@ def test_malformed_nested_json_is_durable_failure_with_one_real_attempt(
     row[field] = copy.deepcopy(value)
     stack.enqueue("/" + resource + ".json", chembl(resource, [row]))
     plan, result = explicit_activity(engine, resource)
-    assert result is None  # failed prerequisite cannot query any experimental records
+    assert result is None  # experimental queries require validated identity prerequisites
     assert plan["status"] == "unavailable" and plan["stop_reason"] == "provider_schema"
     assert plan["call_ids"] == ["tool_000"]
     assert plan["identity"]["status"] == "unavailable" and plan["identity"]["selected_id"] == ""

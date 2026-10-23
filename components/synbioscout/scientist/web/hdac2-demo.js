@@ -24,7 +24,6 @@
     "分数比较使用相同模型、候选池和预处理版本；DrugCLIP 的 median/MAD 标度分别对应 common50 和 capacity1000 候选池。": "Compare scores within the same model, candidate pool and preprocessing version. DrugCLIP median/MAD scales are specific to the common50 and capacity1000 pools.",
     "用户导入评分：显示本次 CSV 的数值排序，靶点、候选池、预处理版本与模型来源待核验。": "User-imported scores: numeric rankings from this CSV; target, candidate pool, preprocessing version and model provenance await verification.",
     "本演示展示固定 HDAC2 输入下的四模型评分及 CSV 排序检查。": "This demo presents four-model scoring and CSV ranking checks for fixed HDAC2 inputs.",
-    "用户导入评分独立保存在本次内存检查中；研究证据、运行历史与模型执行各自记录。": "User-imported scores remain in this in-memory inspection; research evidence, run history and model execution are recorded separately.",
     "共同 50 分子": "Common 50 molecules",
     "常见 50 分子": "Common 50 molecules",
     "容量 1000 分子": "Capacity: 1,000 molecules",
@@ -43,10 +42,11 @@
     "Python / CUDA 环境": "Python / CUDA environments",
     "DrugCLIP 原始六折大权重": "Original DrugCLIP six-fold weights",
     "SaProt 原始大权重": "Original SaProt weights",
-    "已编码缓存的真实向量匹配；原始六折大权重未包含。": "Vector matching with precomputed embeddings; original six-fold weights are not included.",
-    "已编码缓存的真实向量匹配；原始 SaProt 大权重未包含。": "Vector matching with precomputed embeddings; original SaProt weights are not included.",
+    "已编码缓存的真实向量匹配；原始六折大权重未包含。": "Vector matching with precomputed embeddings; original six-fold weights are external resources.",
+    "已编码缓存的真实向量匹配；原始 SaProt 大权重未包含。": "Vector matching with precomputed embeddings; original SaProt weights are external resources.",
     "模型 forward 推理；演示包包含 PSICHIC 权重。": "Model forward inference; the demo archive includes PSICHIC weights.",
     "基于已准备口袋药效团和构象的 CPU matching。": "CPU matching with a prepared pocket pharmacophore and molecular conformers.",
+    "导入评分用于本次内存检查；研究证据、运行历史与模型执行各自记录。": "Imported scores are inspected in memory; research evidence, run history and model execution have separate records."
   });
   // Historical software labels only: exact display aliases for saved records.
   // Keep these keys readable for compatibility; current producers use the table above.
@@ -60,7 +60,8 @@
     "分数只用于各模型内部排序，不跨模型归一化，也不是药效、疾病疗效或结合实验证据。": "Demo scores describe within-model ranking. The root workflow separately builds cross-model consensus from full valid score-pool percentiles.",
     "科学比较需同模型、同候选池及同预处理版本；DrugCLIP common50 与 capacity1000 的 median/MAD 分数不能直接比较。": "Compare scores within the same model, candidate pool and preprocessing version. DrugCLIP median/MAD scales are specific to the common50 and capacity1000 pools.",
     "演示不构成 ADMET、ChassisGate 生产能力、PK/PD、MD 或湿实验验证。": "This demo presents four-model scoring and CSV ranking checks for fixed HDAC2 inputs.",
-    "用户导入数据未核验，不加入研究证据或运行历史，也不自动触发下载或模型执行。": "User-imported scores remain in this in-memory inspection; research evidence, run history and model execution are recorded separately."
+    "用户导入数据未核验，不加入研究证据或运行历史，也不自动触发下载或模型执行。": "User-imported scores remain in this in-memory inspection; research evidence, run history and model execution are recorded separately.",
+    "用户导入评分独立保存在本次内存检查中；研究证据、运行历史与模型执行各自记录。": "Imported scores are inspected in memory; research evidence, run history and model execution have separate records."
   });
   const catalogText = value => Object.prototype.hasOwnProperty.call(CATALOG_TEXT, value) ? CATALOG_TEXT[value] :
     Object.prototype.hasOwnProperty.call(LEGACY_CATALOG_TEXT, value) ? LEGACY_CATALOG_TEXT[value] : str(value);
@@ -264,7 +265,7 @@
     content.append(metrics);
     const excluded = items(report.online_timing_excludes);
     const names = {model_loading: "model loading", encoding: "encoding", conformer_generation: "conformer generation", warmup: "warmup"};
-    content.append(node("p", "demo-timing-note", "Scoring-time exclusions: " + (excluded.length ? excluded.map(value => names[value] || value).join(", ") : "not reported by the source") + ". Timing scope: source-reported aggregate; local and per-model timing fields: unrecorded."));
+    content.append(node("p", "demo-timing-note", "Preparation tasks: " + (excluded.length ? excluded.map(value => names[value] || value).join(", ") : "not reported by the source") + ". Timing scope: source-reported aggregate; local and per-model timing fields: unrecorded."));
     const models = node("div", "demo-model-grid");
     for (const model of items(catalog.models)) {
       const card = node("article", "demo-model-card");

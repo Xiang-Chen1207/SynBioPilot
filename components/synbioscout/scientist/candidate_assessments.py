@@ -1,7 +1,7 @@
 """Derived candidate assessment cards; exact entities and exact review versions only.
 
 No file/network access and no mutation of historical records. These summaries keep
-specified candidates visible even when chemical identity or scientific support is
+candidate-assessment inputs visible while chemical identity or scientific support is
 unresolved. They never turn workflow completion into a scientific conclusion.
 """
 from __future__ import annotations
@@ -99,7 +99,7 @@ def names_in_quote(candidate, quote):
 
 
 def candidate_version_supported(h, associations, evidence_lookup, checker):
-    """A supported general claim cannot supply a named entity's missing support.
+    """Named-entity support requires evidence linked to that entity and its claim.
 
     Associations have already passed exact entity, version and source/span checks.
     Recheck applicability on the candidate-bound supporting record by itself: a
@@ -234,7 +234,7 @@ def assessment_cards(run, evaluations=None):
             row["scientific_status"] = evaluation["scientific_status"]
             row["unknowns"] = list(dict.fromkeys([*evaluation["unknowns"], *row["unknowns"]]))
             row["next_questions"] = list(dict.fromkeys([*evaluation["next_questions"], *row["next_questions"]]))
-    # Never fabricate an entity if generation did not return the specified name.
+    # Keep an unmatched assessment name as an unresolved record with an empty entity ID.
     for name in run.brief.existing_candidates:
         if not matching_candidates(candidates, [name]):
             rows.append({"candidate_id": "", "entity_id": "", "name": name, "origin": "user_supplied",

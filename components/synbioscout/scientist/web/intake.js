@@ -7,9 +7,9 @@
     reference_chassis:"referenceChassis", delivery_context:"deliveryContext", conditions:"researchConditions",
     success_criterion:"successCriterion", target_hints:"hints", background_package_id:"backgroundPackageId",
     research_mode:"researchMode", engineering_allowed:"engineeringAllowed"};
-  const fieldNames = {disease:"Disease", phenotype:"Phenotype / symptoms", existing_candidates:"Specified candidates", population:"Population / study subjects",
+  const fieldNames = {disease:"Disease", phenotype:"Phenotype / symptoms", existing_candidates:"Assessment inputs", population:"Population / study subjects",
     research_goal:"Research goal", task_intent:"Task direction"};
-  const intents = {disease_exploration:"Explore candidates for a disease", candidate_assessment:"Assess specified candidates", legacy:"Research with explicitly provided context"};
+  const intents = {disease_exploration:"Explore candidates for a disease", candidate_assessment:"Assess candidate inputs", legacy:"Research with explicitly provided context"};
   const origins = {extracted:"Extracted from your text · Please confirm", unspecified:"Not specified", suggested:"System suggestion · Editable", user_edited:"Edited by you", user_retracted:"Explicitly retracted by you", manual_form:"From research settings · Please confirm"};
   const budgetMap = {max_targets:"maxTargets",literature_max_candidates:"maxCandidates",max_papers:"maxPapers",max_searches:"maxSearches",max_llm_calls:"maxCalls"};
   const state = {draft:null, epoch:0, busy:false, dirty:false, stale:false, pending:null, parseRequest:null, parseKnown:true, submitted:false, submissionBusy:false,touched:new Set()};
@@ -125,7 +125,7 @@
     state.draft=row; state.dirty=false;state.stale=false;state.submitted=row.status==="submitted";
     state.touched=new Set(Object.entries(row.provenance||{}).filter(([,value])=>["user_edited","manual_form"].includes(value.kind)).map(([key])=>key));
     applyBrief(row.brief);$("confirmIntake").checked=false;renderDraft();savePointer();
-    message(row.mode==="manual"?"A draft is ready from your research settings. Review its fields before confirming the current request.":row.questions?.length?"The draft is saved. Please clarify the task direction or edit the confirmation card.":"The draft is ready. Review the extracted fields and unspecified items; research will only be created after confirmation.");
+    message(row.mode==="manual"?"A draft is ready from your research settings. Review its fields before confirming the current request.":row.questions?.length?"The draft is saved. Please clarify the task direction or edit the confirmation card.":"The draft is ready. Review the extracted fields and unspecified items; confirmation creates the research project.");
     return true;
   }
   async function saveDraft() {
@@ -142,7 +142,7 @@
     const manualBudget=mode==="manual"?{...Object.fromEntries(Object.entries(budgetMap).map(([key,element])=>[key,Number($(element).value)])),timeout_seconds:Number($("maxMinutes").value)*60}:null;
     const epoch=++state.epoch; state.busy=true;$("confirmIntake").checked=false;
     $("intakeReceiptLink").hidden=true;
-    $("checkIntake").hidden=true;message(mode==="manual"?"Preparing an editable draft without a model call…":"Understanding your request; research has not started. Parsing is limited to 45 seconds per attempt, with no automatic retry.");refreshControls();
+    $("checkIntake").hidden=true;message(mode==="manual"?"Preparing an editable draft from research settings · model calls: 0…":"Parsing your request into a draft · research starts after confirmation. Each parsing attempt has a 45-second limit; retries use a new request.");refreshControls();
     let request;
     try {
       if(reply&&state.dirty)await saveDraft();

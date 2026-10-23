@@ -357,7 +357,7 @@ class ToolRegistry:
         scope = sources[0].metadata.get("search_scope", {}) if sources else {}
         if not isinstance(scope, dict) or not scope:
             saved = getattr(self.sources, "last_literature_scope", {})
-            # A previous query's envelope cannot supply this query's coverage.
+            # Each query records its own response envelope and coverage.
             scope = saved if isinstance(saved, dict) and saved.get("query") == args.query else {}
         total = scope.get("total_hits")
         total = total if type(total) is int and total >= 0 else None
@@ -455,7 +455,7 @@ class ToolRegistry:
         truncated = bool(page_meta.get("next")) or len(rows) > args.limit or (
             isinstance(total, int) and total > args.limit)
         if args.resource in {"molecule", "target"} and total != len(rows):
-            truncated = True  # a partial identity list cannot establish uniqueness
+            truncated = True  # identity uniqueness requires a complete result list
         self._database(result, rows[:args.limit], endpoint + "?" + urlencode(params),
                        metadata={"pagination": page_meta}, truncated=truncated)
         result.pagination = {"page": args.page, "limit": args.limit, "total_count": total,
@@ -497,7 +497,7 @@ class ToolRegistry:
                     exact = exact and key == args.inchikey
             else:
                 exact = exact and row.get("target_type") == "SINGLE PROTEIN" and len(components) == 1
-                # A label/component count alone cannot establish protein identity.
+                # Protein identity requires the matching entity and sequence; labels/counts provide context.
                 # Unknown or non-protein components and missing accessions remain
                 # unresolved even for an explicitly supplied ChEMBL target ID.
                 component = components[0] if len(components) == 1 else {}

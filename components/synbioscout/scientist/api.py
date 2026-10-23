@@ -188,7 +188,7 @@ def create_app(settings: ScientistSettings | None = None, *, service=None, intak
     def intake_limits(response: Response):
         response.headers["Cache-Control"] = "no-store"
         return {**LIMITS, "model_available":settings.llm.backend != "none" and settings.allow_remote_llm_data,
-                "cost_note":"Parsing is metered separately and does not use or increase the research budget; UTF-8 bytes are not provider tokens or cost."}
+                "cost_note":"Parsing uses a separate budget. UTF-8 bytes measure serialized size; provider tokens and cost have separate accounting."}
 
     @app.post("/api/intake/drafts")
     def intake_parse(body: IntakeRequest, response: Response):

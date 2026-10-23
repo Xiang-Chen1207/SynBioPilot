@@ -33,7 +33,7 @@ def assessment_case(
     endpoint="SYNTHETIC associated symptom and marker endpoints",
     body=None,
 ):
-    """Pure validator fixture. This does not simulate a real independent model call."""
+    """Synthetic validator fixture with local review data."""
     quote = "SC and placebo did not differ on the recorded clinical endpoint, while blood marker M was higher with SC."
     source = SourceRecord(
         source_id="synthetic:sentinel",
@@ -158,7 +158,7 @@ def synthetic_operation(run, operation_id="llm_synthetic_003"):
             status="completed",
             title="独立候选结论审查",
             created_at="synthetic",
-            summary="SYNTHETIC pure contract test, not a real model call.",
+            summary="SYNTHETIC contract test with a mocked review call.",
             operation_id=operation_id,
             operation_status="completed",
         )

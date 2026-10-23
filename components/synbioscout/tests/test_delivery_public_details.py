@@ -1,7 +1,7 @@
 """SYNTHETIC replicas of public budget facts; no historical run/model/network access.
 
 71585/49392 and the four skipped stages reproduce the recorded public failure
-shape only. They are not a replay of the historical model's private request.
+shape using public fixture data; historical requests retain their own provenance.
 """
 import copy
 import hashlib

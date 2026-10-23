@@ -96,7 +96,7 @@ def test_window_and_label_parity_for_actual_text_codepoints_and_unverifiable_cas
         )
         assert javascript["label"] == (
             "Original Full text · saved contiguous excerpt · " + expected_window
-            + " · Reused material · not a full-text retrieval this run"
+            + " · Reused saved excerpt"
         ), name
         assert ("original text window unverified" in javascript["label"]) is (window is None), name
         assert ("原文窗口未核实" in source_scope_label(row)) is (window is None), name

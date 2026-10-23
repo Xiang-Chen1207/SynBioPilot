@@ -90,12 +90,12 @@ def render_report(run: ResearchRun):
                           "关联证据：" + ", ".join(candidate.evidence_ids) + "；仍需领域复核。")
         lines += ["", f"### {candidate.name}", "",
                   "角色：" + ROLE_LABELS[candidate.role] + "；判定状态：" + candidate.role_status,
-                  "", "角色依据：" + (candidate.role_reason or "尚未独立审查"),
-                  "", evidence_label, "", "原候选草稿依据（非独立结论审查）：" + candidate.rationale,
+                  "", "角色依据：" + (candidate.role_reason or "独立审查状态：待完成"),
+                  "", evidence_label, "", "候选生成依据（独立结论审查另行记录）：" + candidate.rationale,
                   "", f"结构：`{candidate.smiles or '待核对'}`；InChIKey：`{candidate.inchikey or '未知'}`",
                   "", "与靶点关系：" + cell(candidate.target_relations),
-                  "", "底盘评估：" + cell(candidate.gate or "尚未执行 ChassisGate"),
-                  "", "ADMET：" + cell(candidate.admet or "尚未执行"),
+                  "", "底盘评估：" + cell(candidate.gate or "ChassisGate 状态：待运行"),
+                  "", "ADMET：" + cell(candidate.admet or "执行状态：待运行"),
                   "", "未知项：" + "; ".join(candidate.uncertainties)]
     cards = assessment_cards(run, evaluations)
     specified = [row for row in cards if row["origin"] == "user_supplied"]

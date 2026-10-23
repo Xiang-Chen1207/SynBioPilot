@@ -54,7 +54,7 @@ def background_row(*, name="Synthetic lactate", smiles="C[C@@H](O)C(=O)[O-].[Na+
 
 def test_required_canonical_identity_runs_with_insufficient_optional_input_reserve(tmp_path, monkeypatch):
     engine, clock, llm_calls, queries = setup_core(tmp_path, monkeypatch)
-    engine.run.candidates = []  # Actual trigger: initial extraction omitted the specified candidate.
+    engine.run.candidates = []  # Trigger: an assessment input awaits an identity record after initial extraction.
     engine.ledger.counts["input_tokens_reserved"] = 175000
     engine.critical_reserve = lambda: {"bytes": 130000, "calls": 2, "output_bytes": 24000, "seconds": 125}
     before = dict(engine.ledger.counts)

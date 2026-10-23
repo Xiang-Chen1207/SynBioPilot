@@ -1,4 +1,4 @@
-"""Unreviewed drafts and configured exclusions cannot become recommendations."""
+"""Recommendation output follows reviewed evidence and configured exclusions."""
 import pytest
 from fastapi.testclient import TestClient
 
@@ -29,7 +29,7 @@ def test_unreviewed_literature_is_held_even_with_positive_gate():
     c = candidate(routes=["literature"])
     decide_candidates([c], [])
     assert c.decision == "hold"
-    assert "review did not pass" in c.decision_reasons[0]
+    assert "Accepted literature evidence: 0" in c.decision_reasons[0]
 
 
 def test_only_opposing_evidence_is_held():
@@ -60,7 +60,7 @@ def test_target_download_is_project_confined(tmp_path, kind):
     run = service.store.create_run(pid, ResearchBrief(disease="fixture only"))
     directory = service.store.run_dir(pid, run.run_id)
     inside = directory / "fixture.pdb"
-    inside.write_text("SYNTHETIC target download test; not a protein structure")
+    inside.write_text("SYNTHETIC target-file download fixture")
     outside = tmp_path / "outside.txt"
     outside.write_text("outside-project fixture")
     run.target_packages = [TargetPackage(package_id="inside", status="needs_review", **{kind: str(inside)}),

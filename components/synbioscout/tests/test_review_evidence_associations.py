@@ -139,7 +139,7 @@ def test_finalized_run_cannot_be_readjudicated_and_public_assessment_does_not_mu
     assert card["opposing_evidence_ids"] == [new.evidence_id]
     assert card["population_requested"] == "SYNTHETIC children"
     assert card["evidence_scope"][-1]["study_system"] == "SYNTHETIC children"
-    assert "不等于" in card["status_note"]
+    assert card["status_note"] == "候选结论包含评估状态、证据来源和适用条件。"
     assert "全文" not in json.dumps(card["evidence_scope"], ensure_ascii=False)
     assert engine.run.model_dump_json() == before
     exported = export_document(engine.run)
