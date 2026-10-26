@@ -1,0 +1,36 @@
+{
+  "disease": "migraine",
+  "phenotype": "headache frequency",
+  "research_goal": "Compare literature evidence and identify questions for follow-up research.",
+  "task_intent": "disease_exploration",
+  "research_mode": "co_scientist",
+  "species": "",
+  "population": "",
+  "chassis_name": "",
+  "chassis_id": "",
+  "reference_chassis": "",
+  "background_package_id": "",
+  "existing_candidates": [],
+  "target_hints": [],
+  "target_packages": [],
+  "experiment_ids": [],
+  "allowed_precursors": [],
+  "experimental_capabilities": [],
+  "assumptions": [],
+  "engineering_allowed": false,
+  "budget": {
+    "max_targets": 2,
+    "literature_max_candidates": 2,
+    "max_papers": 12,
+    "max_searches": 5,
+    "max_llm_calls": 16,
+    "max_md_jobs_total": 0,
+    "max_hypotheses": 2,
+    "max_http_requests": 28,
+    "max_tool_calls": 12,
+    "max_input_tokens": 300000,
+    "max_output_tokens": 96000,
+    "timeout_seconds": 840
+  }
+}
+

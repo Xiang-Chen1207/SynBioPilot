@@ -1,0 +1,16 @@
+{
+  "workspace": "runs/scientist",
+  "llm": {
+    "backend": "none",
+    "model": "",
+    "base_url": "",
+    "api_key_env": "OPENAI_API_KEY",
+    "executable": "codex",
+    "timeout_seconds": 900
+  },
+  "target2lead_config": "",
+  "http_timeout_seconds": 30,
+  "http_retries": 2,
+  "allow_remote_llm_data": false
+}
+

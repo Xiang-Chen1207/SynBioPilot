@@ -1,0 +1,9 @@
+compound_id,gate_status,gate_class,gate_fine_class,gate_rationale
+SYN001,success,D1,D1,SYNTHETIC fixture; no biological assessment
+SYN002,success,A2,A2,SYNTHETIC fixture; no biological assessment
+SYN003,success,E,E1,SYNTHETIC fixture; no biological assessment
+SYN004,success,C1,C1,SYNTHETIC fixture; no biological assessment
+SYN005,success,E,E1,SYNTHETIC fixture; no biological assessment
+SYN006,success,B2,B2,SYNTHETIC fixture; no biological assessment
+SYN007,success,D2,D2,SYNTHETIC fixture; no biological assessment
+SYN008,success,E,E1,SYNTHETIC fixture; no biological assessment

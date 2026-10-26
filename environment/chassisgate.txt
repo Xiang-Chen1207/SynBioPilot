@@ -1,0 +1,22 @@
+# Runtime + dev dependencies for the ChassisGate review artifact.
+# Mirrors [project].dependencies and [project.optional-dependencies].dev in
+# pyproject.toml. `pip install -e .[dev]` is equivalent; this file exists for
+# reviewers who prefer `pip install -r requirements.txt`.
+#
+# Note: exact resolved pins are not shipped because fresh LLM-backed runs also
+# depend on external provider/model versions (DeepSeek-V4pro) that cannot be
+# pinned here. The version floors below match pyproject.toml.
+pydantic>=2
+openai>=1.40
+scikit-learn
+numpy
+python-dotenv
+requests
+cobra>=0.29
+rdkit>=2024.3.1
+bioservices
+pubchempy
+openpyxl
+# dev / test
+pytest
+pytest-mock

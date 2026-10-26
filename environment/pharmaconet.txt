@@ -1,0 +1,12 @@
+# Python 3.12; torch is supplied by the TiONE pretrain:0.0.6 image.
+rdkit==2026.3.6
+biopython==1.88
+omegaconf==2.3.0
+numba==0.59.1
+numpy==1.26.4
+molvoxel==0.2.0
+gdown==6.4.1
+openbabel-wheel==3.1.1.23
+pandas==2.2.3
+pyarrow==19.0.1
+PyYAML==6.0.2

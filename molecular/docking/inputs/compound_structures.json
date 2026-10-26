@@ -1,0 +1,58 @@
+[
+  {
+    "CID": 444732,
+    "MolecularFormula": "C17H22N2O3",
+    "MolecularWeight": "302.37",
+    "SMILES": "C[C@H](/C=C(\\C)/C=C/C(=O)NO)C(=O)C1=CC=C(C=C1)N(C)C",
+    "name": "trichostatin A",
+    "structure_source_url": "https://pubchem.ncbi.nlm.nih.gov/compound/444732"
+  },
+  {
+    "CID": 6918837,
+    "MolecularFormula": "C21H23N3O2",
+    "MolecularWeight": "349.4",
+    "SMILES": "CC1=C(C2=CC=CC=C2N1)CCNCC3=CC=C(C=C3)/C=C/C(=O)NO",
+    "name": "panobinostat",
+    "structure_source_url": "https://pubchem.ncbi.nlm.nih.gov/compound/6918837"
+  },
+  {
+    "CID": 6918638,
+    "MolecularFormula": "C15H14N2O4S",
+    "MolecularWeight": "318.3",
+    "SMILES": "C1=CC=C(C=C1)NS(=O)(=O)C2=CC=CC(=C2)/C=C/C(=O)NO",
+    "name": "belinostat",
+    "structure_source_url": "https://pubchem.ncbi.nlm.nih.gov/compound/6918638"
+  },
+  {
+    "CID": 4261,
+    "MolecularFormula": "C21H20N4O3",
+    "MolecularWeight": "376.4",
+    "SMILES": "C1=CC=C(C(=C1)N)NC(=O)C2=CC=C(C=C2)CNC(=O)OCC3=CN=CC=C3",
+    "name": "entinostat",
+    "structure_source_url": "https://pubchem.ncbi.nlm.nih.gov/compound/4261"
+  },
+  {
+    "CID": 9865515,
+    "MolecularFormula": "C23H20N6O",
+    "MolecularWeight": "396.4",
+    "SMILES": "C1=CC=C(C(=C1)N)NC(=O)C2=CC=C(C=C2)CNC3=NC=CC(=N3)C4=CN=CC=C4",
+    "name": "mocetinostat",
+    "structure_source_url": "https://pubchem.ncbi.nlm.nih.gov/compound/9865515"
+  },
+  {
+    "CID": 2746,
+    "MolecularFormula": "C15H15N3O2",
+    "MolecularWeight": "269.30",
+    "SMILES": "CC(=O)NC1=CC=C(C=C1)C(=O)NC2=CC=CC=C2N",
+    "name": "tacedinaline",
+    "structure_source_url": "https://pubchem.ncbi.nlm.nih.gov/compound/2746"
+  },
+  {
+    "CID": 12136798,
+    "MolecularFormula": "C22H19FN4O2",
+    "MolecularWeight": "390.4",
+    "SMILES": "C1=CC(=CN=C1)/C=C/C(=O)NCC2=CC=C(C=C2)C(=O)NC3=C(C=C(C=C3)F)N",
+    "name": "tucidinostat",
+    "structure_source_url": "https://pubchem.ncbi.nlm.nih.gov/compound/12136798"
+  }
+]
